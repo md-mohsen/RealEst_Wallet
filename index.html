@@ -2,11 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corinto — Real Estate Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>CORINTO | محفظة العقارات</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-
 :root{--dk:#f5f5f0;--dk2:#ffffff;--card:#ffffff;--bdr:#e0ddd8;--gold:#9a7530;--gl:#b8922e;--tx:#1a1a1a;--mt:#6b7280;--success:#1e6e4a;--danger:#b91c1c}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0ede8;color:var(--tx);min-height:100vh;overflow-x:hidden}
@@ -168,10 +167,10 @@ body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0ede8;color:var(--tx
 .toast.err{background:var(--danger);color:#fff}
 .clres{margin-top:12px;background:#0d2418;border:1px solid #25D366;border-radius:10px;padding:12px;font-size:12px;color:#e8f5e9;white-space:pre-wrap;direction:rtl;max-height:280px;overflow-y:auto;display:none}
 @media(max-width:600px){.header{padding:8px 12px}.logo{font-size:15px}.hstats{gap:5px}.hs b{font-size:13px}.gwrap{padding:10px 12px 80px}.f label{font-size:10px}.fr,.fr3{grid-template-columns:1fr}.swrap{padding:12px}}
-
 </style>
 </head>
 <body>
+
 <!-- HEADER -->
 <header class="header">
   <div class="logo">CORINTO<small>REAL ESTATE PORTFOLIO</small></div>
@@ -241,7 +240,7 @@ body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0ede8;color:var(--tx
    <div class="form-sec-hdr">📋 البيانات الأساسية</div>
    <div class="fr">
     <div class="f"><label>اسم الوحدة / العقار <span style="font-size:10px;color:var(--mt)">(اختياري)</span></label><input id="p-name" placeholder="شقة 3A، دوبلكس الدور 7... (اختياري)" oninput="upCode()"></div>
-    <div class="f"><label>الشركة <span style="font-size:10px;color:var(--mt)">(اختياري للريسيل الشخصي)</span></label><select id="p-co" onchange="onCoChange()"><option value="">-- مالك خاص (PVT) --</option></select><div id="owner-name-wrap"><input id="p-owner" placeholder="اسم المالك (اختياري)" style="width:100%;margin-top:6px;padding:7px 10px;border:0.5px solid var(--bdr);border-radius:6px;font-family:Cairo,sans-serif;font-size:13px;background:var(--card);color:var(--tx);outline:none"></div></div>
+    <div class="f"><label>الشركة <span style="font-size:10px;color:var(--mt)">(اختياري للريسيل الشخصي)</span></label><select id="p-co" onchange="onCoChange()"><option value="">-- مالك خاص (PVT) --</option></select><div id="owner-name-wrap"><input id="p-owner" placeholder="اسم المالك (اختياري)" style="width:100%;margin-top:6px;padding:7px 10px;border:0.5px solid var(--bdr);border-radius:6px;font-family:Cairo,sans-serif;font-size:13px;background:#fff;color:#1a1a1a;outline:none;border:1px solid #c8c4be"></div></div>
    </div>
    <div class="fr">
     <div class="f"><label>نوع العقار <span class="rq">*</span></label>
@@ -542,8 +541,8 @@ body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0ede8;color:var(--tx
 </div>
 
 <div class="toast" id="toast"></div>
-<script>
 
+<script>
 const SBU='https://fyuoawuxlpqiqqyozqmq.supabase.co';
 const SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dW9hd3V4bHBxaXFxeW96cW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NTUwMTYsImV4cCI6MjA5NzAzMTAxNn0.kCjlbWiQKGpYXt553Ym-_OOKav5WZnzx8dJu63CroY4';
 const TL={res:'سكني',com:'تجاري',adm:'إداري',htl:'فندقي',cos:'ساحلي',off:'مكتبي',med:'طبي'};
@@ -885,7 +884,11 @@ function setFeats(str,listId){document.getElementById(listId||'feat-list').inner
 function fillSourceDrop(){
   const pg=document.getElementById('p-proj-grp');
   const bg=document.getElementById('p-bld-grp');
-  if(pg)pg.innerHTML=projs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
+  const coSel=document.getElementById('p-co');
+  const coId=coSel?coSel.value:'';
+  // Filter projects by selected company
+  const filtProjs=coId?projs.filter(p=>p.company_id===coId):projs;
+  if(pg)pg.innerHTML=filtProjs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
   if(bg)bg.innerHTML=buildings.map(b=>'<option value="bld_'+b.id+'">'+b.name+(b.location?' — '+b.location:'')+'</option>').join('');
 }
 function showSourceSection(which){
@@ -940,6 +943,11 @@ function onCoChange(){
   const sel=document.getElementById('p-co');
   const ow=document.getElementById('p-owner');
   if(ow)ow.style.display=(sel&&sel.value)?'none':'';
+  // Reset source dropdown and refill filtered projects
+  const srcSel=document.getElementById('p-source-sel');
+  if(srcSel)srcSel.value='';
+  showSourceSection('');
+  fillSourceDrop();
   upCode();
 }
 // ── Building feat helpers ──
@@ -1125,7 +1133,11 @@ function cpyCmp(){const[p1,p2]=cids.map(id=>props.find(p=>p.id===id));ncp(buildC
 function fillSourceDrop(){
   const pg=document.getElementById('p-proj-grp');
   const bg=document.getElementById('p-bld-grp');
-  if(pg)pg.innerHTML=projs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
+  const coSel=document.getElementById('p-co');
+  const coId=coSel?coSel.value:'';
+  // Filter projects by selected company
+  const filtProjs=coId?projs.filter(p=>p.company_id===coId):projs;
+  if(pg)pg.innerHTML=filtProjs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
   if(bg)bg.innerHTML=buildings.map(b=>'<option value="bld_'+b.id+'">'+b.name+(b.location?' — '+b.location:'')+'</option>').join('');
 }
 function showSourceSection(which){
@@ -1180,6 +1192,11 @@ function onCoChange(){
   const sel=document.getElementById('p-co');
   const ow=document.getElementById('p-owner');
   if(ow)ow.style.display=(sel&&sel.value)?'none':'';
+  // Reset source dropdown and refill filtered projects
+  const srcSel=document.getElementById('p-source-sel');
+  if(srcSel)srcSel.value='';
+  showSourceSection('');
+  fillSourceDrop();
   upCode();
 }
 // ── Building feat helpers ──
@@ -1630,7 +1647,11 @@ function openProjModal(id){
   }
   openOv('ov-proj');
 }
+let _savingProj=false;
 async function saveProj(){
+  if(_savingProj)return;
+  _savingProj=true;
+  try{
   const nm=document.getElementById('prj-nm').value.trim();
   if(!nm){toast('أدخل اسم المشروع',1);return;}
   const feats=getFeats('prj-feat-list').join(' | ');
@@ -1719,7 +1740,6 @@ function toast(msg,err){
 }
 
 init();
-
 </script>
 </body>
 </html>
