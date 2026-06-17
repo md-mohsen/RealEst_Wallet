@@ -1,13 +1,1725 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>realest-wallet</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corinto — Real Estate Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+
+:root{--dk:#f5f5f0;--dk2:#ffffff;--card:#ffffff;--bdr:#e0ddd8;--gold:#9a7530;--gl:#b8922e;--tx:#1a1a1a;--mt:#6b7280;--success:#1e6e4a;--danger:#b91c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo','Segoe UI',sans-serif;background:#f0ede8;color:var(--tx);min-height:100vh;overflow-x:hidden}
+/* HEADER */
+.header{background:#1a1a2e;border-bottom:2px solid var(--gold);padding:10px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.logo{font-size:18px;font-weight:900;color:#f0c060;letter-spacing:2px;flex-shrink:0}
+.logo small{font-size:9px;color:var(--mt);font-weight:300;display:block;letter-spacing:1px}
+.rate-box{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:5px 10px;font-size:12px}
+.rate-lbl{color:var(--mt)}
+.rate-in{width:52px;background:none;border:none;color:#f0c060;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;outline:none;text-align:center}
+.rate-sfx{color:var(--mt);font-size:11px}
+.hstats{display:flex;gap:8px;margin-right:auto;flex-wrap:wrap}
+.hs{background:rgba(240,192,96,.15);border:1px solid rgba(240,192,96,.4);border-radius:8px;padding:3px 10px;font-size:11px;text-align:center}
+.hs b{font-size:15px;font-weight:700;color:var(--gold);display:block}
+.btn-add{background:var(--gold);color:var(--dk2);border:none;padding:8px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+.btn-add:hover{background:var(--gl)}
+/* TABS */
+.tabs{display:flex;background:#1a1a2e;border-bottom:1px solid var(--bdr)}
+.tab{flex:0 0 auto;padding:10px 20px;font-family:'Cairo',sans-serif;font-size:13px;background:none;border:none;color:#cbd5e1;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:700}
+/* FILTERS */
+.fbar{padding:12px 18px 8px;background:#ffffff;border-bottom:1px solid var(--bdr)}
+.frow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;align-items:center}
+.flbl{font-size:10px;color:var(--mt);min-width:44px;flex-shrink:0}
+.fb{padding:4px 11px;border-radius:14px;border:1px solid var(--bdr);background:#ffffff;color:var(--mt);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb.active{background:var(--gold);color:var(--dk2);border-color:var(--gold);font-weight:700}
+.srch{background:#ffffff;border:1px solid var(--bdr);color:var(--tx);padding:5px 11px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:12px;outline:none;width:190px}
+.srch:focus{border-color:var(--gold)}
+.srch::placeholder{color:var(--mt)}
+/* GRID */
+.gwrap{padding:14px 18px 80px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+/* CARD */
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card:hover{border-color:var(--gold)}
+.card.sel{border-color:var(--success);box-shadow:0 0 0 2px rgba(61,143,110,.25)}
+.stripe{height:3px}
+.s-res{background:#3d8f6e}.s-com{background:#8f5a3d}.s-adm{background:#3d5a8f}
+.s-htl{background:#8f3d8f}.s-cos{background:#3d7a8f}.s-off{background:#6e8f3d}.s-med{background:#8f3d4d}
+.ch{padding:11px 13px 8px}
+.ccode{font-size:10px;font-family:monospace;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:3px}
+.ctrow{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.cname{font-size:13px;font-weight:700}
+.cdev{font-size:10px;color:var(--mt);margin-top:2px}
+.ctags{display:flex;flex-direction:column;gap:3px;align-items:flex-end;flex-shrink:0}
+.tg{font-size:9px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap}
+.t-res{background:rgba(61,143,110,.14);color:#6dd4a8;border:1px solid rgba(61,143,110,.3)}
+.t-com{background:rgba(143,90,61,.14);color:#d4936d;border:1px solid rgba(143,90,61,.3)}
+.t-adm{background:rgba(61,90,143,.14);color:#6d93d4;border:1px solid rgba(61,90,143,.3)}
+.t-htl{background:rgba(143,61,143,.14);color:#d46dd4;border:1px solid rgba(143,61,143,.3)}
+.t-cos{background:rgba(61,122,143,.14);color:#6dbcd4;border:1px solid rgba(61,122,143,.3)}
+.t-off{background:rgba(110,143,61,.14);color:#a8d46d;border:1px solid rgba(110,143,61,.3)}
+.t-med{background:rgba(143,61,77,.14);color:#d46d7a;border:1px solid rgba(143,61,77,.3)}
+.t-primary{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.3)}
+.t-resale{background:rgba(201,76,76,.1);color:#d47a7a;border:1px solid rgba(201,76,76,.3)}
+.t-uc{background:rgba(122,155,181,.1);color:var(--mt);border:1px solid rgba(122,155,181,.2)}
+.t-ready{background:rgba(61,143,110,.14);color:#6dd4a8;border:1px solid rgba(61,143,110,.3)}
+.cb{padding:0 13px 10px}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.ir:last-child{border:none}
+.ik{color:var(--mt)}
+.iv{color:var(--tx);font-weight:600;text-align:left}
+.iv.gld{color:var(--gold)}
+.ca{padding:9px 13px;display:flex;gap:5px;border-top:1px solid var(--bdr)}
+.bwa{flex:1;background:#25D366;color:#fff;border:none;padding:6px;border-radius:7px;font-family:'Cairo',sans-serif;font-size:11px;font-weight:600;cursor:pointer}
+.bcmp{background:rgba(61,90,143,.18);color:#6d93d4;border:1px solid rgba(61,90,143,.3);padding:6px 9px;border-radius:7px;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
+.bcl{background:rgba(201,168,76,.08);color:var(--gold);border:1px solid rgba(201,168,76,.2);padding:6px 9px;border-radius:7px;font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif}
+.bedit{background:rgba(122,155,181,.08);color:var(--mt);border:1px solid var(--bdr);padding:6px 8px;border-radius:7px;font-size:11px;cursor:pointer}
+.bdel{background:rgba(201,76,76,.08);color:#d47a7a;border:1px solid rgba(201,76,76,.2);padding:6px 8px;border-radius:7px;font-size:11px;cursor:pointer}
+/* COMPARE BAR */
+.cmpbar{position:fixed;bottom:0;left:0;right:0;background:#0a1a0e;border-top:2px solid var(--success);padding:11px 18px;display:none;align-items:center;gap:10px;z-index:40}
+.cmpbar.vis{display:flex}
+.cmplbl{color:#6dd4a8;font-size:13px;font-weight:600;flex-shrink:0}
+.cmpnames{color:var(--mt);font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmpgo{background:var(--success);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.cmpgo:disabled{opacity:.4;cursor:default}
+.cmpcl{background:none;border:1px solid var(--bdr);color:var(--mt);padding:8px 12px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer}
+/* SETTINGS */
+.swrap{padding:18px;background:#f0ede8}
+.shead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stitle{font-size:14px;font-weight:700;color:var(--gold)}
+.sadd{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:12px;cursor:pointer}
+.colist{display:flex;flex-direction:column;gap:10px}
+.coitem{background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+.coitem-hdr{padding:11px 13px;display:flex;align-items:center;gap:10px;background:#fafaf8}
+.cocd{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:4px 10px;font-family:monospace;font-size:13px;font-weight:700;min-width:58px;text-align:center}
+.conm{flex:1;font-size:13px;font-weight:600}
+.cocnt{font-size:11px;color:var(--mt)}
+.coacts{display:flex;gap:5px}
+.ibtn{background:none;border:1px solid var(--bdr);color:var(--mt);padding:5px 8px;border-radius:6px;font-size:12px;cursor:pointer}
+.ibtn.dl{color:#d47a7a;border-color:rgba(201,76,76,.3)}
+.ibtn.profile-btn{color:var(--gold);border-color:rgba(201,168,76,.3)}
+.form-sec-hdr{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;border-bottom:1px solid var(--bdr);padding-bottom:8px;margin:16px 0 12px}
+.feat-row{display:flex;gap:6px;align-items:center}
+.feat-row input{flex:1;background:var(--dk2);border:1px solid var(--bdr);color:var(--tx);padding:7px 10px;border-radius:8px;font-family:Cairo,sans-serif;font-size:13px;outline:none}
+.feat-row input:focus{border-color:var(--gold)}
+.feat-del{background:none;border:1px solid rgba(201,76,76,.3);color:#d47a7a;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.co-profile{border-top:1px solid var(--bdr);padding:11px 13px;display:none;background:#f9f7f4}
+.co-profile.open{display:block}
+.co-profile-row{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.co-profile-row:last-child{border:none}
+.co-profile-lbl{color:var(--mt);min-width:90px;flex-shrink:0;font-size:11px}
+.co-profile-val{color:#374151;flex:1;line-height:1.6}
+.co-profile-empty{color:var(--mt);font-size:11px;font-style:italic}
+.coitem{background:#ffffff;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.coitem-hdr{padding:11px 13px;display:flex;align-items:center;gap:10px;background:#fafaf8}
+.ibtn.profile-btn{color:var(--gold);border-color:rgba(201,168,76,.3)}
+.form-sec-hdr{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;border-bottom:1px solid var(--bdr);padding-bottom:8px;margin:16px 0 12px}
+.feat-row{display:flex;gap:6px;align-items:center}
+.feat-row input{flex:1;background:var(--dk2);border:1px solid var(--bdr);color:var(--tx);padding:7px 10px;border-radius:8px;font-family:Cairo,sans-serif;font-size:13px;outline:none}
+.feat-row input:focus{border-color:var(--gold)}
+.feat-del{background:none;border:1px solid rgba(201,76,76,.3);color:#d47a7a;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.co-profile{border-top:1px solid var(--bdr);padding:11px 13px;display:none;background:#f9f7f4}
+.co-profile.open{display:block}
+.co-profile-row{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.co-profile-row:last-child{border:none}
+.co-profile-lbl{color:var(--mt);min-width:90px;flex-shrink:0;font-size:11px}
+.co-profile-val{color:#374151;flex:1;line-height:1.6}
+.co-profile-empty{color:var(--mt);font-size:11px;font-style:italic}
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
+.ov.open{display:flex}
+.modal{background:#ffffff;border:1px solid var(--gold);border-radius:14px;width:100%;max-width:520px;margin:auto;max-height:calc(100vh - 28px);overflow-y:auto}
+.modal.sm{max-width:390px}
+.modal.lg{max-width:700px}
+.mh{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card);z-index:1}
+.mt2{font-size:15px;font-weight:700;color:var(--gold)}
+.mx{background:none;border:none;color:var(--mt);font-size:20px;cursor:pointer;line-height:1}
+.mb{padding:14px 18px}
+.mf{padding:11px 18px;border-top:1px solid var(--bdr);display:flex;gap:7px;position:sticky;bottom:0;background:var(--card)}
+/* FORM */
+.f{margin-bottom:11px}
+.f label{display:block;font-size:11px;color:var(--mt);margin-bottom:4px;font-weight:600}
+.f label .rq{color:var(--gold)}
+.f input,.f select,.f textarea{width:100%;background:var(--dk2);border:1px solid var(--bdr);color:var(--tx);padding:8px 11px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold)}
+.f textarea{resize:vertical;min-height:65px}
+.f select option{background:var(--card)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.cprev{background:var(--dk2);border:1px solid rgba(201,168,76,.35);border-radius:8px;padding:9px;font-family:monospace;font-size:17px;font-weight:700;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:12px}
+.bp{flex:1;background:var(--gold);color:var(--dk2);border:none;padding:9px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.bp:hover{background:var(--gl)}
+.bs{background:none;border:1px solid var(--bdr);color:var(--mt);padding:9px 16px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer}
+.bwa2{flex:1;background:#25D366;color:#fff;border:none;padding:9px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.waprev{background:#0d2418;border:1px solid #25D366;border-radius:10px;padding:12px;font-size:13px;line-height:2.1;color:#e8f5e9;white-space:pre-wrap;direction:rtl;max-height:58vh;overflow-y:auto;font-family:'Cairo',sans-serif}
+.cmptbl{width:100%;border-collapse:collapse;font-size:12px}
+.cmptbl th{background:rgba(201,168,76,.1);color:var(--gold);padding:9px;text-align:center;font-weight:700;border:1px solid var(--bdr)}
+.cmptbl td{padding:7px 9px;border:1px solid var(--bdr);text-align:center;color:var(--tx)}
+.cmptbl tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.cmptbl td:first-child{color:var(--mt);text-align:right;font-size:11px}
+.tchk{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tchk label{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mt);cursor:pointer}
+.tchk input{accent-color:var(--gold)}
+.empty{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--mt)}
+.emico{font-size:44px;margin-bottom:12px}
+.loading{text-align:center;padding:50px;color:var(--mt);font-size:13px}
+.toast{position:fixed;bottom:70px;right:18px;background:var(--gold);color:var(--dk2);padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;z-index:200;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.err{background:var(--danger);color:#fff}
+.clres{margin-top:12px;background:#0d2418;border:1px solid #25D366;border-radius:10px;padding:12px;font-size:12px;color:#e8f5e9;white-space:pre-wrap;direction:rtl;max-height:280px;overflow-y:auto;display:none}
+@media(max-width:600px){.header{padding:8px 12px}.logo{font-size:15px}.hstats{gap:5px}.hs b{font-size:13px}.gwrap{padding:10px 12px 80px}.f label{font-size:10px}.fr,.fr3{grid-template-columns:1fr}.swrap{padding:12px}}
+
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">CORINTO<small>REAL ESTATE PORTFOLIO</small></div>
+  <div class="rate-box">
+    <span class="rate-lbl">💱</span>
+    <input type="number" class="rate-in" id="rate-in" value="54" min="1">
+    <span class="rate-sfx">ج / $</span>
+  </div>
+  <div class="hstats" id="hstats"></div>
+  <button class="btn-add" onclick="openPropModal()">+ إضافة عقار</button>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" id="tab-port" onclick="goTab('port')">📋 المحفظة</button>
+  <button class="tab" id="tab-set" onclick="goTab('set')">⚙️ الإعداد</button>
+</div>
+
+<!-- PORTFOLIO -->
+<div id="vport">
+  <div class="fbar" id="fbar"></div>
+  <div class="gwrap"><div class="grid" id="grid"><div class="loading">⏳ جاري التحميل...</div></div></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="vset" style="display:none">
+  <div class="swrap">
+    <div class="shead">
+      <span class="stitle">🏢 الشركات والمطورون</span>
+      <button class="sadd" onclick="openCoModal()">+ إضافة شركة</button>
+    </div>
+    <div class="colist" id="colist"><div class="loading">⏳</div></div>
+  </div>
+  <div class="swrap" style="border-top:1px solid var(--bdr)">
+    <div class="shead">
+      <span class="stitle">🏢 المباني والأبراج</span>
+      <button class="sadd" onclick="openBldModal()">+ إضافة مبنى</button>
+    </div>
+    <div class="colist" id="bldlist"><div class="loading">⏳</div></div>
+  </div>
+  <div class="swrap" style="border-top:1px solid var(--bdr)">
+    <div class="shead">
+      <span class="stitle">🏗️ المشاريع</span>
+      <button class="sadd" onclick="openProjModal()">+ إضافة مشروع</button>
+    </div>
+    <div class="colist" id="projlist"><div class="loading">⏳</div></div>
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="cmpbar" id="cmpbar">
+  <span class="cmplbl">⚖️</span>
+  <span class="cmpnames" id="cmpnames">اختر عقارين</span>
+  <button class="cmpcl" onclick="clrCmp()">✕ إلغاء</button>
+  <button class="cmpgo" id="cmpgo" onclick="openCmpModal()" disabled>مقارنة</button>
+</div>
+
+<!-- MODALS -->
+<!-- Property -->
+<div class="ov" id="ov-prop">
+ <div class="modal">
+  <div class="mh"><span class="mt2" id="ptitle">إضافة عقار</span><button class="mx" onclick="closeOv('ov-prop')">✕</button></div>
+  <div class="mb">
+   <div class="cprev" id="cprev">--- - --- - ---</div>
+
+   <!-- ── البيانات الأساسية ── -->
+   <div class="form-sec-hdr">📋 البيانات الأساسية</div>
+   <div class="fr">
+    <div class="f"><label>اسم الوحدة / العقار <span style="font-size:10px;color:var(--mt)">(اختياري)</span></label><input id="p-name" placeholder="شقة 3A، دوبلكس الدور 7... (اختياري)" oninput="upCode()"></div>
+    <div class="f"><label>الشركة <span style="font-size:10px;color:var(--mt)">(اختياري للريسيل الشخصي)</span></label><select id="p-co" onchange="onCoChange()"><option value="">-- مالك خاص (PVT) --</option></select><div id="owner-name-wrap"><input id="p-owner" placeholder="اسم المالك (اختياري)" style="width:100%;margin-top:6px;padding:7px 10px;border:0.5px solid var(--bdr);border-radius:6px;font-family:Cairo,sans-serif;font-size:13px;background:var(--card);color:var(--tx);outline:none"></div></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>نوع العقار <span class="rq">*</span></label>
+     <select id="p-type" onchange="upCode()">
+      <option value="res">RES — سكني</option>
+      <option value="com">COM — تجاري</option>
+      <option value="adm">ADM — إداري</option>
+      <option value="htl">HTL — فندقي</option>
+      <option value="cos">COS — ساحلي</option>
+      <option value="off">OFF — مكتبي</option>
+      <option value="med">MED — طبي</option>
+     </select>
+    </div>
+    <div class="f"><label>الحالة <span class="rq">*</span></label>
+     <select id="p-status">
+      <option value="primary">PRIMARY — برايمري</option>
+      <option value="resale">RESALE — ريسيل</option>
+      <option value="uc">UC — تحت الإنشاء</option>
+      <option value="ready">READY — جاهز للتسليم</option>
+     </select>
+    </div>
+   </div>
+
+   <!-- ── المصدر ── -->
+   <div class="form-sec-hdr">🏗️ المصدر (مشروع أو مبنى)</div>
+   <div class="f">
+    <label>اختر المشروع أو المبنى</label>
+    <select id="p-source-sel" onchange="onSourceChange(this.value)" class="fs">
+     <option value="">-- اختر --</option>
+     <optgroup id="p-proj-grp" label="── المشاريع ──"></optgroup>
+     <optgroup id="p-bld-grp" label="── المباني / الأبراج ──"></optgroup>
+     <option value="__new_building__">🏢 إضافة مبنى / برج جديد</option>
+    </select>
+   </div>
+   <!-- عرض بيانات المشروع تلقائياً (للقراءة) -->
+   <div id="proj-info-section" style="display:none">
+    <div class="f" style="background:rgba(154,117,48,.06);border:1px solid rgba(154,117,48,.2);border-radius:8px;padding:10px 12px">
+     <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px">📋 بيانات المشروع (تلقائية)</div>
+     <div id="proj-feats-display" style="font-size:12px;color:var(--mt)"></div>
+    </div>
+    <input type="hidden" id="p-loc" value="">
+    <input type="hidden" id="p-proj-area" value="">
+    <input type="hidden" id="p-view" value="">
+    <input type="hidden" id="p-del" value="">
+    <div style="display:none" id="feat-list"></div>
+   </div>
+   <!-- بيانات المبنى (قابلة للتعديل) -->
+   <div id="bld-info-section" style="display:none">
+    <div class="f"><label>اسم المبنى / البرج</label><input id="p-bld-name" placeholder="برج النيل، عمارة الفردوس..."></div>
+    <div class="f"><label>الموقع</label><input id="p-loc" placeholder="المقطم، مدينة نصر..."></div>
+    <div class="fr">
+     <div class="f"><label>مساحة الأرض</label><input id="p-bld-land" placeholder="500م²"></div>
+     <div class="f"><label>سنة البناء</label><input id="p-bld-year" placeholder="2005"></div>
+    </div>
+    <div class="fr">
+     <div class="f"><label>عدد المصاعد</label><input id="p-bld-elev" placeholder="2 مصعد"></div>
+     <div class="f"><label>المدخل</label><input id="p-bld-entrance" placeholder="بوابة رئيسية"></div>
+    </div>
+    <input type="hidden" id="p-proj-area" value="">
+    <input type="hidden" id="p-view" value="">
+    <input type="hidden" id="p-del" value="">
+    <div class="f">
+     <label>مميزات المبنى</label>
+     <div id="bld-feat-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+     <button type="button" onclick="addBldFeat()" style="background:none;border:1px dashed var(--bdr);color:var(--mt);padding:6px 12px;border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;width:100%;text-align:center">+ إضافة ميزة للمبنى</button>
+    </div>
+    <div style="display:none" id="feat-list"></div>
+   </div>
+   <!-- لا مصدر محدد -->
+   <div id="no-source-section" style="display:none">
+    <div class="f"><label>الموقع</label><input id="p-loc" placeholder="الموقع"></div>
+    <div class="fr">
+     <div class="f"><label>مساحة المشروع</label><input id="p-proj-area" placeholder="50 فدان"></div>
+     <div class="f"><label>الإطلالة</label><input id="p-view" placeholder="بحر / حديقة"></div>
+    </div>
+    <div class="f"><label>موعد التسليم</label><input id="p-del" placeholder="2028"></div>
+    <div class="f">
+     <label>مميزات</label>
+     <div id="feat-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+     <button type="button" onclick="addFeat()" style="background:none;border:1px dashed var(--bdr);color:var(--mt);padding:6px 12px;border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;width:100%;text-align:center">+ إضافة ميزة</button>
+    </div>
+   </div>
+
+   <!-- ── تفاصيل الوحدة ── -->
+   <div class="form-sec-hdr">🏠 تفاصيل الوحدة</div>
+   <div class="fr3">
+    <div class="f"><label>نوع الوحدة</label><input id="p-utype" placeholder="شقة / محل..."></div>
+    <div class="f"><label>الدور</label><input id="p-floor" placeholder="الثاني"></div>
+    <div class="f"><label>مساحة الوحدة</label><input id="p-area" placeholder="150م²"></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>التشطيب</label><input id="p-fin" placeholder="نص تشطيب / سوبر لوكس"></div>
+    <div class="f"><label>فيو الشقة</label><input id="p-unit-view" placeholder="بحر مباشر / حديقة داخلية"></div>
+   </div>
+   <div class="fr3">
+    <div class="f"><label>غرف النوم</label><input type="number" id="p-bed" placeholder="3" min="0"></div>
+    <div class="f"><label>الحمامات</label><input type="number" id="p-bath" placeholder="2" min="0"></div>
+    <div class="f"><label>البلكونات</label><input type="number" id="p-bal" placeholder="1" min="0"></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>الصالات / ريسبشن</label><input type="number" id="p-hall" placeholder="1" min="0"></div>
+    <div class="f"><label style="margin-bottom:8px;display:block">غرف إضافية</label>
+     <div style="display:flex;flex-wrap:wrap;gap:9px;padding-top:2px">
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mt);cursor:pointer"><input type="checkbox" id="p-living" style="accent-color:var(--gold)"> ليفينج روم</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mt);cursor:pointer"><input type="checkbox" id="p-laundry" style="accent-color:var(--gold)"> غرفة غسيل</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mt);cursor:pointer"><input type="checkbox" id="p-maid" style="accent-color:var(--gold)"> غرفة خدامة</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mt);cursor:pointer"><input type="checkbox" id="p-store" style="accent-color:var(--gold)"> مخزن</label>
+     </div>
+    </div>
+   </div>
+
+   <div class="f">
+    <label>✨ مزايا الوحدة</label>
+    <div id="unit-feat-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;margin-top:6px"></div>
+    <button type="button" onclick="addUnitFeat()" style="background:none;border:1px dashed var(--bdr);color:var(--mt);padding:6px 12px;border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;width:100%;text-align:center">+ إضافة ميزة للوحدة</button>
+   </div>
+   <!-- ── السعر والتمويل ── -->
+   <div class="form-sec-hdr">💰 السعر والتمويل</div>
+   <div class="f"><label>السعر الأصلي (جنيه) <span class="rq">*</span></label><input type="number" id="p-price" placeholder="4,862,000" oninput="calcDiscount('price')"></div>
+   <div style="background:var(--dk2);border:1px solid var(--bdr);border-radius:10px;padding:11px 13px;margin-bottom:11px">
+    <div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:8px;letter-spacing:.5px">✂️ الخصم (اختياري)</div>
+    <div class="fr" style="align-items:flex-end;gap:9px">
+     <div class="f" style="margin-bottom:0"><label>النسبة %</label><input type="number" id="p-disc-pct" placeholder="0" min="0" max="100" step="0.1" oninput="calcDiscount('pct')"></div>
+     <div style="font-size:18px;color:var(--mt);padding-bottom:8px;flex-shrink:0">⇄</div>
+     <div class="f" style="margin-bottom:0"><label>المبلغ (جنيه)</label><input type="number" id="p-disc-amt" placeholder="0" oninput="calcDiscount('amt')"></div>
+    </div>
+    <div id="p-final-wrap" style="display:none;margin-top:10px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
+     <span style="font-size:11px;color:var(--mt)">السعر بعد الخصم</span>
+     <span id="p-final-val" style="font-size:16px;font-weight:700;color:var(--gold)">—</span>
+    </div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>المقدم</label><input id="p-down" placeholder="10% أو 500,000 ج"></div>
+    <div class="f"><label>مدة التقسيط</label><input id="p-yrs" placeholder="12 سنة"></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>مبلغ القسط (جنيه)</label><input type="number" id="p-inst" placeholder="97,500"></div>
+    <div class="f"><label>تكرار القسط</label>
+     <select id="p-inst-freq">
+      <option value="monthly">شهري</option>
+      <option value="bimonthly">كل شهرين</option>
+      <option value="quarterly" selected>ربع سنوي</option>
+      <option value="quadrimester">كل 4 شهور</option>
+      <option value="biannual">نصف سنوي</option>
+      <option value="annual">سنوي</option>
+     </select>
+    </div>
+   </div>
+
+   <!-- ── أخرى ── -->
+   <div class="form-sec-hdr">📝 أخرى</div>
+   <div class="f"><label>رقم التواصل</label><input id="p-ph" value="+201080121357"></div>
+   <div class="f"><label>ملاحظات داخلية</label><textarea id="p-notes" placeholder="ملاحظات للاستخدام الداخلي..."></textarea></div>
+  </div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-prop')">إلغاء</button><button class="bp" onclick="saveProp()">💾 حفظ العقار</button></div>
+ </div>
+</div>
+
+<!-- Company -->
+<div class="ov" id="ov-co">
+ <div class="modal">
+  <div class="mh"><span class="mt2" id="cotitle">إضافة شركة / مطور</span><button class="mx" onclick="closeOv('ov-co')">✕</button></div>
+  <div class="mb">
+   <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:10px;letter-spacing:.5px;border-bottom:1px solid var(--bdr);padding-bottom:8px">📋 البيانات الأساسية</div>
+   <div class="fr">
+    <div class="f"><label>اسم الشركة / المطور <span class="rq">*</span></label><input id="co-nm" placeholder="CCR Developments"></div>
+    <div class="f"><label>رمز الشركة (للكود) <span class="rq">*</span></label>
+     <input id="co-cd" placeholder="CCR" maxlength="5" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'');checkCoCode(this.value)">
+     <div style="font-size:10px;color:var(--mt);margin-top:4px" id="co-cd-hint">3–5 حروف إنجليزية — مثال: RES-CCR-001</div>
+     <div id="co-cd-warn" style="display:none;font-size:11px;font-weight:600;color:#d47a7a;margin-top:4px;padding:5px 8px;background:rgba(201,76,76,.08);border-radius:6px;border:1px solid rgba(201,76,76,.2)">⚠️ هذا الرمز مستخدم مسبقاً</div>
+    </div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>سنة التأسيس</label><input id="co-year" placeholder="2010" type="number"></div>
+    <div class="f"><label>الموقع الإلكتروني</label><input id="co-web" placeholder="https://..."></div>
+   </div>
+   <div style="font-size:11px;color:var(--gold);font-weight:700;margin:14px 0 10px;letter-spacing:.5px;border-bottom:1px solid var(--bdr);padding-bottom:8px">🏢 البروفايل والمعلومات</div>
+   <div class="f"><label>نبذة عن الشركة</label><textarea id="co-bio" placeholder="نبذة مختصرة عن الشركة وتاريخها..." style="min-height:75px"></textarea></div>
+   <div class="f"><label>نقاط القوة (افصل بـ |)</label><textarea id="co-str" placeholder="التسليم في الوقت المحدد | جودة التشطيبات | مواقع مميزة" style="min-height:60px"></textarea></div>
+   <div class="f"><label>سابقة الأعمال (افصل بـ |)</label><textarea id="co-prev" placeholder="مشروع A — 2020 | مشروع B — 2022 | مشروع C — 2024" style="min-height:60px"></textarea></div>
+   <div class="f"><label>ملاحظات</label><textarea id="co-notes" placeholder="أي معلومات إضافية للاستخدام الداخلي..." style="min-height:60px"></textarea></div>
+  </div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-co')">إلغاء</button><button class="bp" onclick="saveCo()">💾 حفظ</button></div>
+ </div>
+</div>
+
+<!-- Project Modal -->
+<div class="ov" id="ov-proj">
+ <div class="modal">
+  <div class="mh"><span class="mt2" id="projtitle">إضافة مشروع</span><button class="mx" onclick="closeOv('ov-proj')">✕</button></div>
+  <div class="mb">
+   <div class="fr">
+    <div class="f"><label>اسم المشروع <span class="rq">*</span></label><input id="prj-nm" placeholder="Ayyam Residence"></div>
+    <div class="f"><label>الشركة المطورة</label><select id="prj-co" class="fs"><option value="">-- اختر --</option></select></div>
+   </div>
+   <div class="f"><label>الموقع</label><input id="prj-loc" placeholder="R8 العاصمة الإدارية"></div>
+   <div class="fr">
+    <div class="f"><label>مساحة المشروع</label><input id="prj-area" placeholder="50 فدان"></div>
+    <div class="f"><label>إطلالة المشروع</label><input id="prj-view" placeholder="بحر / حديقة مركزية"></div>
+   </div>
+   <div class="f"><label>موعد التسليم</label><input id="prj-del" placeholder="2028"></div>
+   <div class="f">
+    <label>مميزات المشروع</label>
+    <div id="prj-feat-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+    <button type="button" onclick="addProjFeat()" style="background:none;border:1px dashed var(--bdr);color:var(--mt);padding:6px 12px;border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;width:100%;text-align:center">+ إضافة ميزة</button>
+   </div>
+   <div class="f"><label>ملاحظات</label><textarea id="prj-notes" placeholder="تفاصيل إضافية..." style="min-height:60px"></textarea></div>
+  </div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-proj')">إلغاء</button><button class="bp" onclick="saveProj()">💾 حفظ المشروع</button></div>
+ </div>
+</div>
+
+<!-- Building Modal -->
+<div class="ov" id="ov-bld">
+ <div class="modal">
+  <div class="mh"><span class="mt2" id="bldtitle">إضافة مبنى / برج</span><button class="mx" onclick="closeOv('ov-bld')">✕</button></div>
+  <div class="mb">
+   <div class="fr">
+    <div class="f"><label>اسم المبنى <span class="rq">*</span></label><input id="bld-nm" placeholder="برج النيل"></div>
+    <div class="f"><label>الشركة</label><select id="bld-co" class="fs"><option value="">-- اختر --</option></select></div>
+   </div>
+   <div class="f"><label>الموقع</label><input id="bld-loc" placeholder="المقطم، القاهرة"></div>
+   <div class="fr">
+    <div class="f"><label>مساحة الأرض</label><input id="bld-land" placeholder="500م²"></div>
+    <div class="f"><label>سنة البناء</label><input id="bld-year" placeholder="2005"></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>عدد المصاعد</label><input id="bld-elev" placeholder="2 مصعد"></div>
+    <div class="f"><label>المدخل</label><input id="bld-entrance" placeholder="بوابة رئيسية"></div>
+   </div>
+   <div class="f">
+    <label>مميزات المبنى</label>
+    <div id="bld-feat-list-modal" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+    <button type="button" onclick="addBldFeatModal()" style="background:none;border:1px dashed var(--bdr);color:var(--mt);padding:6px 12px;border-radius:8px;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer;width:100%;text-align:center">+ إضافة ميزة</button>
+   </div>
+   <div class="f"><label>ملاحظات</label><textarea id="bld-notes" style="min-height:55px"></textarea></div>
+  </div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-bld')">إلغاء</button><button class="bp" onclick="saveBld()">💾 حفظ المبنى</button></div>
+ </div>
+</div>
+
+<!-- WhatsApp -->
+<div class="ov" id="ov-wa">
+ <div class="modal">
+  <div class="mh"><span class="mt2">📲 بطاقة الواتساب</span><button class="mx" onclick="closeOv('ov-wa')">✕</button></div>
+  <div class="mb"><div class="waprev" id="wa-txt" style="direction:rtl;text-align:right;unicode-bidi:plaintext"></div></div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-wa')">إغلاق</button><button class="bwa2" onclick="cpyWa()">📋 نسخ الرسالة</button></div>
+ </div>
+</div>
+
+<!-- Compare -->
+<div class="ov" id="ov-cmp">
+ <div class="modal lg">
+  <div class="mh"><span class="mt2">⚖️ مقارنة العقارات</span><button class="mx" onclick="closeOv('ov-cmp')">✕</button></div>
+  <div class="mb"><div style="overflow-x:auto" id="cmptbl-wrap"></div></div>
+  <div class="mf"><button class="bs" onclick="closeOv('ov-cmp')">إغلاق</button><button class="bwa2" onclick="cpyCmp()">📋 نسخ المقارنة</button></div>
+ </div>
+</div>
+
+<!-- Client Report -->
+<div class="ov" id="ov-cl">
+ <div class="modal">
+  <div class="mh"><span class="mt2">👤 تقرير عميل مخصص</span><button class="mx" onclick="closeOv('ov-cl')">✕</button></div>
+  <div class="mb">
+   <div class="fr">
+    <div class="f"><label>اسم العميل <span class="rq">*</span></label><input id="cl-nm" placeholder="م. أحمد"></div>
+    <div class="f"><label>رقمه (اختياري)</label><input id="cl-ph" placeholder="+966..."></div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>الميزانية من (ج)</label><input type="number" id="cl-mn" placeholder="0"></div>
+    <div class="f"><label>الميزانية حتى (ج)</label><input type="number" id="cl-mx" placeholder="10000000"></div>
+   </div>
+   <div class="f"><label>نوع العقار المطلوب</label>
+    <div class="tchk">
+     <label><input type="checkbox" value="res" class="clt"> سكني</label>
+     <label><input type="checkbox" value="com" class="clt"> تجاري</label>
+     <label><input type="checkbox" value="adm" class="clt"> إداري</label>
+     <label><input type="checkbox" value="htl" class="clt"> فندقي</label>
+     <label><input type="checkbox" value="cos" class="clt"> ساحلي</label>
+     <label><input type="checkbox" value="off" class="clt"> مكتبي</label>
+     <label><input type="checkbox" value="med" class="clt"> طبي</label>
+    </div>
+   </div>
+   <div class="fr">
+    <div class="f"><label>الحالة المفضلة</label>
+     <select id="cl-st"><option value="">الكل</option><option value="primary">برايمري</option><option value="resale">ريسيل</option><option value="uc">تحت الإنشاء</option><option value="ready">جاهز</option></select>
+    </div>
+    <div class="f"><label>ملاحظات إضافية</label><input id="cl-nt" placeholder="يفضل R8، مقدم أقل..."></div>
+   </div>
+   <div class="clres" id="cl-res"></div>
+  </div>
+  <div class="mf">
+   <button class="bs" onclick="closeOv('ov-cl')">إغلاق</button>
+   <button class="bp" onclick="genClient()">🎯 توليد التقرير</button>
+   <button class="bwa2" id="cl-cpy" style="display:none" onclick="cpyCl()">📋 نسخ</button>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+
+const SBU='https://fyuoawuxlpqiqqyozqmq.supabase.co';
+const SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5dW9hd3V4bHBxaXFxeW96cW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NTUwMTYsImV4cCI6MjA5NzAzMTAxNn0.kCjlbWiQKGpYXt553Ym-_OOKav5WZnzx8dJu63CroY4';
+const TL={res:'سكني',com:'تجاري',adm:'إداري',htl:'فندقي',cos:'ساحلي',off:'مكتبي',med:'طبي'};
+const TP={res:'RES',com:'COM',adm:'ADM',htl:'HTL',cos:'COS',off:'OFF',med:'MED'};
+const TE={res:'🏙️',com:'🏢',adm:'🏛️',htl:'🏨',cos:'🏖️',off:'🖥️',med:'🏥'};
+const SL={primary:'برايمري',resale:'ريسيل',uc:'تحت الإنشاء',ready:'جاهز للتسليم'};
+const FREQ={monthly:'شهري',bimonthly:'كل شهرين',quarterly:'ربع سنوي',quadrimester:'كل 4 شهور',biannual:'نصف سنوي',annual:'سنوي'};
+const FREQ_MO={monthly:1,bimonthly:2,quarterly:3,quadrimester:4,biannual:6,annual:12};
+
+let cos=[],projs=[],buildings=[],props=[],rate=54,filt={type:'all',status:'all',co:'all',q:''},cids=[],ePid=null,eCid=null,ePrjId=null,eBldId=null,clTxt='';
+
+const H=()=>({'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK});
+async function sb(path,o={}){
+  const r=await fetch(SBU+path,{...o,headers:{...H(),...(o.headers||{})}});
+  if(r.status===204)return null;
+  const d=await r.json();
+  if(!r.ok)throw new Error(typeof d==='object'?JSON.stringify(d):d);
+  return d;
+}
+const getCos=()=>sb('/rest/v1/companies?select=*&order=name.asc');
+const addCo=d=>sb('/rest/v1/companies',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const updCo=(id,d)=>sb(`/rest/v1/companies?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const delCo=id=>sb(`/rest/v1/companies?id=eq.${id}`,{method:'DELETE'});
+const getProps=()=>sb('/rest/v1/properties?select=*&order=created_at.desc');
+const addProp=d=>sb('/rest/v1/properties',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const updProp=(id,d)=>sb(`/rest/v1/properties?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const delProp=id=>sb(`/rest/v1/properties?id=eq.${id}`,{method:'DELETE'});
+const getProjs=()=>sb('/rest/v1/projects?select=*&order=name.asc');
+const getBuildings=()=>sb('/rest/v1/buildings?select=*&order=name.asc');
+const addBuilding=d=>sb('/rest/v1/buildings',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const updBuilding=(id,d)=>sb('/rest/v1/buildings?id=eq.'+id,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const delBuilding=id=>sb('/rest/v1/buildings?id=eq.'+id,{method:'DELETE'});
+const addProj=d=>sb('/rest/v1/projects',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const updProj=(id,d)=>sb('/rest/v1/projects?id=eq.'+id,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(d)});
+const delProj=id=>sb('/rest/v1/projects?id=eq.'+id,{method:'DELETE'});
+const getSets=()=>sb('/rest/v1/settings?select=*');
+const upsSetting=(k,v)=>sb('/rest/v1/settings',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify({key:k,value:v})});
+// Sequence: read max from loaded props — guaranteed no duplicates
+function getMaxSeq(){
+  let max=0;
+  props.forEach(function(p){
+    if(!p.code)return;
+    const parts=p.code.split('-');
+    const n=parseInt(parts[parts.length-1])||0;
+    if(n>max)max=n;
+  });
+  return max;
+}
+function codeExists(code){return props.some(function(p){return p.code===code;});}
+function getUniqueCode(type,coCode){
+  let seq=getMaxSeq()+1;
+  let code=(TP[type]||'XXX')+'-'+coCode+'-'+String(seq).padStart(3,'0');
+  while(codeExists(code)){seq++;code=(TP[type]||'XXX')+'-'+coCode+'-'+String(seq).padStart(3,'0');}
+  return code;
+}
+
+async function init(){
+  try{
+    [cos,projs,buildings,props]=await Promise.all([getCos(),getProjs(),getBuildings(),getProps()]);
+    try{const s=await getSets();const r=(s||[]).find(x=>x.key==='exchange_rate');if(r){rate=parseFloat(r.value)||54;document.getElementById('rate-in').value=rate;}}catch(e){}
+    render();
+  }catch(e){
+    document.getElementById('grid').innerHTML=`<div class="empty"><div class="emico">⚠️</div><div style="color:#d47a7a">خطأ في الاتصال بقاعدة البيانات<br><small style="font-size:10px;color:var(--mt)">${e.message}</small><br><br><small>تأكد من تشغيل SQL الإعداد في Supabase أولاً</small></div></div>`;
+  }
+}
+
+function render(){
+  renderStats();
+  renderFilters();
+  renderGrid();
+  renderCoList();
+  if(typeof renderProjList==='function')renderProjList();
+  renderCoDrop();
+  if(typeof filterProjDrop==='function')filterProjDrop();
+  renderCmpBar();
+}
+
+function fmt(n){if(!n&&n!==0)return'—';return Number(n).toLocaleString('en-US');}
+function usd(n){if(!n||isNaN(n))return'$—';return'~$'+Math.round(n/rate).toLocaleString('en-US');}
+function fmtM(n){if(!n)return'0';if(n>=1e6)return(n/1e6).toFixed(1).toLocaleString('en-US')+'M EGP';if(n>=1e3)return Math.round(n/1e3).toLocaleString('en-US')+'K EGP';return n.toLocaleString('en-US')+' EGP';}
+function moEq(inst,freq){
+  // convert installment to monthly equivalent
+  const m=FREQ_MO[freq]||3;
+  return inst?Math.round(inst/m):null;
+}
+function getDisplayPrice(p){
+  const orig=Number(p.original_price)||Number(p.price)||0;
+  const discAmt=Number(p.discount_amount)||0;
+  const discPct=Number(p.discount_pct)||0;
+  const fin=Number(p.final_price)||orig;
+  return{orig,fin,hasDisc:discAmt>0||discPct>0,discPct,discAmt};
+}
+function toggleDownType(){
+  const t=document.getElementById('p-down-type').value;
+  document.getElementById('p-down-pct').style.display=t==='pct'?'':'none';
+  document.getElementById('p-down-fixed').style.display=t==='fixed'?'':'none';
+}
+function getDownPayment(){
+  const t=document.getElementById('p-down-type')?.value||'pct';
+  if(t==='pct'){const v=document.getElementById('p-down-pct').value;return v?v+'%':'';}
+  const raw=getRaw('p-down-fixed');return raw?fmt(raw)+' جنيه مصري':'';
+}
+function setDownPayment(val){
+  if(!val){document.getElementById('p-down-type').value='pct';toggleDownType();return;}
+  if(String(val).includes('%')){
+    document.getElementById('p-down-type').value='pct';
+    document.getElementById('p-down-pct').value=parseFloat(val)||'';
+  }else{
+    document.getElementById('p-down-type').value='fixed';
+    const n=Number(String(val).replace(/[^0-9]/g,''))||0;
+    const el=document.getElementById('p-down-fixed');
+    el.value=n?n.toLocaleString('en-US'):'';el.dataset.raw=n||'';
+  }
+  toggleDownType();
+}
+
+function calcDiscount(changed){
+  const origEl=document.getElementById('p-price');
+  const pctEl=document.getElementById('p-disc-pct');
+  const amtEl=document.getElementById('p-disc-amt');
+  const finalWrap=document.getElementById('p-final-wrap');
+  const finalVal=document.getElementById('p-final-val');
+  const orig=parseFloat((origEl.dataset.raw||origEl.value||'').replace(/,/g,''))||0;
+  let pct=parseFloat(pctEl.value)||0;
+  let amt=parseFloat((amtEl.dataset.raw||amtEl.value||'').replace(/,/g,''))||0;
+  if(!orig){finalWrap.style.display='none';return;}
+  if(changed==='pct'){
+    pct=Math.min(100,Math.max(0,pct));amt=orig*(pct/100);
+    amtEl.value=amt?Math.round(amt).toLocaleString('en-US'):'';amtEl.dataset.raw=Math.round(amt)||'';
+  }else if(changed==='amt'){
+    amt=Math.min(orig,Math.max(0,amt));pct=orig?((amt/orig)*100):0;
+    pctEl.value=pct?pct.toFixed(2):'';
+  }else{
+    if(pct){amt=orig*(pct/100);amtEl.value=Math.round(amt).toLocaleString('en-US');amtEl.dataset.raw=Math.round(amt);}
+    else if(amt){pct=orig?((amt/orig)*100):0;pctEl.value=pct.toFixed(2);}
+  }
+  const fin=orig-amt;
+  if(amt>0&&orig>0){
+    finalWrap.style.display='flex';
+    finalVal.textContent=egp(Math.round(fin))+' (~'+dol(fin)+')';
+  }else{finalWrap.style.display='none';}
+}
+
+function renderStats(){
+  const tv=props.reduce((s,p)=>s+(Number(p.final_price)||Number(p.price)||0),0);
+  document.getElementById('hstats').innerHTML=`
+    <div class="hs"><b>${props.length}</b>عقار</div>
+    <div class="hs"><b>${cos.length}</b>شركة</div>
+    <div class="hs"><b>${fmtM(tv)}</b>إجمالي</div>`;
+}
+
+function renderFilters(){
+  const types=['all','res','com','adm','htl','cos','off','med'];
+  const tl={all:'الكل',res:'سكني',com:'تجاري',adm:'إداري',htl:'فندقي',cos:'ساحلي',off:'مكتبي',med:'طبي'};
+  const sts=['all','primary','resale','uc','ready'];
+  const sl={all:'الكل',primary:'برايمري',resale:'ريسيل',uc:'UC',ready:'جاهز'};
+  const uniqCos=[...new Set(props.map(p=>p.company_name).filter(Boolean))];
+  document.getElementById('fbar').innerHTML=`
+    <div class="frow"><span class="flbl">النوع</span>${types.map(t=>`<button class="fb ${filt.type===t?'active':''}" onclick="sf('type','${t}')">${tl[t]}</button>`).join('')}</div>
+    <div class="frow"><span class="flbl">الحالة</span>${sts.map(s=>`<button class="fb ${filt.status===s?'active':''}" onclick="sf('status','${s}')">${sl[s]}</button>`).join('')}</div>
+    <div class="frow">
+      ${uniqCos.length?`<span class="flbl">شركة</span><button class="fb ${filt.co==='all'?'active':''}" onclick="sf('co','all')">الكل</button>${uniqCos.map(c=>`<button class="fb ${filt.co===c?'active':''}" onclick="sf('co','${c}')">${c}</button>`).join('')}<span style="flex:1"></span>`:'<span style="flex:1"></span>'}
+      <input class="srch" placeholder="🔍 ابحث..." value="${filt.q}" oninput="sf('q',this.value)">
+    </div>`;
+}
+function sf(k,v){filt[k]=v;renderFilters();renderGrid();}
+
+function filtered(){
+  return props.filter(p=>{
+    if(filt.type!=='all'&&p.type!==filt.type)return false;
+    if(filt.status!=='all'&&p.status!==filt.status)return false;
+    if(filt.co!=='all'&&p.company_name!==filt.co)return false;
+    if(filt.q){
+      const q=filt.q.toLowerCase();
+      const fields=[p.name,p.location,p.code,p.company_name,p.unit_type,p.notes,p.features,p.finishing,p.view,p.floor_num];
+      if(!fields.some(x=>(x||'').toLowerCase().includes(q)))return false;
+    }
+    return true;
+  });
+}
+
+function renderGrid(){
+  const fp=filtered();
+  const g=document.getElementById('grid');
+  if(!fp.length){g.innerHTML=`<div class="empty"><div class="emico">🏗️</div><div>لا توجد عقارات مطابقة</div></div>`;return;}
+  g.innerHTML=fp.map(p=>{
+    const freq=p.installment_frequency||'quarterly';
+    const mEq=moEq(p.quarterly_installment,freq);
+    const sel=cids.includes(p.id);
+    const dp=getDisplayPrice(p);
+    // price display
+    let priceHtml='';
+    if(dp.orig){
+      if(dp.hasDisc){
+        priceHtml=`<div class="ir">
+          <span class="ik">💰 السعر</span>
+          <span class="iv" style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+            <span style="text-decoration:line-through;color:var(--mt);font-size:10px">${fmt(dp.orig)} EGP</span>
+            <span style="color:var(--gold);font-weight:700">${fmt(Math.round(dp.fin))} EGP <small style="color:var(--mt)">(${usd(dp.fin)})</small></span>
+          </span>
+        </div>`;
+      } else {
+        priceHtml=`<div class="ir">
+          <span class="ik">💰 السعر</span>
+          <span class="iv gld">${fmt(dp.orig)} EGP <small style="color:var(--mt)">(${usd(dp.orig)})</small></span>
+        </div>`;
+      }
+    }
+    // installment display
+    let instHtml='';
+    if(p.quarterly_installment){
+      const freqLbl=FREQ[freq]||freq;
+      instHtml=`<div class="ir">
+        <span class="ik">📅 ${freqLbl}</span>
+        <span class="iv gld">${fmt(p.quarterly_installment)} ج <small style="color:var(--mt)">(${usd(p.quarterly_installment)})</small></span>
+      </div>`;
+      if(freq!=='monthly'&&mEq){
+        instHtml+=`<div class="ir">
+          <span class="ik" style="padding-right:12px">↳ شهرياً تقريباً</span>
+          <span class="iv" style="color:var(--mt);font-size:11px">${fmt(mEq)} ج (${usd(mEq)})</span>
+        </div>`;
+      }
+    }
+    return`<div class="card ${sel?'sel':''}" id="c-${p.id}">
+  <div class="stripe s-${p.type||'res'}"></div>
+  <div class="ch">
+    <div class="ccode">${p.code||'—'}</div>
+    <div class="ctrow">
+      <div><div class="cname">${p.name}</div>${p.company_name?`<div class="cdev">${p.company_name}</div>`:''}</div>
+      <div class="ctags"><span class="tg t-${p.type}">${TL[p.type]||p.type}</span><span class="tg t-${p.status}">${(SL[p.status]||p.status).split(' ')[0]}</span>${dp.hasDisc?`<span class="tg" style="background:rgba(61,143,110,.14);color:#6dd4a8;border:1px solid rgba(61,143,110,.3)">خصم ${dp.discPct?dp.discPct.toFixed(0)+'%':''}</span>`:''}
+      </div>
+    </div>
+  </div>
+  <div class="cb">
+    ${p.location?`<div class="ir"><span class="ik">📍</span><span class="iv" style="font-size:10px;text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.location}</span></div>`:''}
+    ${p.area?`<div class="ir"><span class="ik">📐 المساحة</span><span class="iv">${p.area}${p.unit_type?' | '+p.unit_type:''}</span></div>`:''}
+    ${priceHtml}
+    ${p.down_payment?`<div class="ir"><span class="ik">المقدم</span><span class="iv">${p.down_payment}</span></div>`:''}
+    ${instHtml}
+    ${p.delivery_date?`<div class="ir"><span class="ik">🏗️ التسليم</span><span class="iv">${p.delivery_date}</span></div>`:''}    ${p.unit_features?`<div class="ir"><span class="ik">✨ مميزات الوحدة</span><span class="iv" style="font-size:11px;text-align:right;max-width:190px">${p.unit_features.split('|').map(f=>f.trim()).filter(Boolean).map(f=>'• '+f).join('<br>')}</span></div>`:''}
+  </div>
+  <div class="ca">
+    <button class="bwa" onclick="showWa('${p.id}')">📲 واتساب</button>
+    <button class="bcmp" onclick="togCmp('${p.id}')" title="للمقارنة">⚖️</button>
+    <button class="bcl" onclick="openClModal('${p.id}')" title="تقرير عميل">👤</button>
+    <button class="bedit" onclick="openPropModal('${p.id}')">✏️</button>
+    <button class="bdel" onclick="confirmDel('${p.id}')">🗑️</button>
+  </div>
+</div>`;
+  }).join('');
+}
+
+function renderCoList(){
+  const el=document.getElementById('colist');
+  if(!el)return;
+  if(!cos.length){el.innerHTML=`<div class="loading">لا توجد شركات — أضف شركة جديدة</div>`;return;}
+  el.innerHTML=cos.map(c=>{
+    const cnt=props.filter(p=>p.company_id===c.id).length;
+    const hasProfile=c.profile_bio||c.strengths||c.past_projects||c.website||c.founded_year||c.notes;
+    const profileHtml=`<div class="co-profile" id="cp-${c.id}">
+      ${c.founded_year?`<div class="co-profile-row"><span class="co-profile-lbl">📅 التأسيس</span><span class="co-profile-val">${c.founded_year}</span></div>`:''}
+      ${c.website?`<div class="co-profile-row"><span class="co-profile-lbl">🌐 الموقع</span><span class="co-profile-val"><a href="${c.website}" target="_blank" style="color:var(--gold)">${c.website}</a></span></div>`:''}
+      ${c.profile_bio?`<div class="co-profile-row"><span class="co-profile-lbl">📝 النبذة</span><span class="co-profile-val">${c.profile_bio}</span></div>`:''}
+      ${c.strengths?`<div class="co-profile-row"><span class="co-profile-lbl">💪 نقاط القوة</span><span class="co-profile-val">${c.strengths.split('|').map(s=>`✅ ${s.trim()}`).join('<br>')}</span></div>`:''}
+      ${c.past_projects?`<div class="co-profile-row"><span class="co-profile-lbl">🏗️ سابقة الأعمال</span><span class="co-profile-val">${c.past_projects.split('|').map(s=>`• ${s.trim()}`).join('<br>')}</span></div>`:''}
+      ${c.notes?`<div class="co-profile-row"><span class="co-profile-lbl">🗒️ ملاحظات</span><span class="co-profile-val">${c.notes}</span></div>`:''}
+      ${!hasProfile?`<div class="co-profile-empty">لا توجد بيانات بروفايل — اضغط تعديل لإضافتها</div>`:''}
+    </div>`;
+    return`<div class="coitem">
+      <div class="coitem-hdr">
+        <div class="cocd">${c.code}</div>
+        <div class="conm">${c.name}${c.founded_year?`<div style="font-size:10px;color:var(--mt);font-weight:400">تأسست ${c.founded_year}</div>`:''}</div>
+        <div class="cocnt">${cnt} عقار</div>
+        <div class="coacts">
+          <button class="ibtn profile-btn" onclick="toggleProfile('${c.id}')" title="البروفايل">👁</button>
+          <button class="ibtn" onclick="openCoModal('${c.id}')">✏️</button>
+          <button class="ibtn dl" onclick="confirmDelCo('${c.id}')">🗑️</button>
+        </div>
+      </div>
+      ${profileHtml}
+    </div>`;
+  }).join('');
+}
+
+function toggleProfile(id){
+  const el=document.getElementById('cp-'+id);
+  if(el)el.classList.toggle('open');
+}
+
+function renderProjList(){
+  const el=document.getElementById('projlist');if(!el)return;
+  if(!projs.length){el.innerHTML='<div class="loading">لا توجد مشاريع — أضف مشروعاً جديداً</div>';return;}
+  el.innerHTML=projs.map(function(p){
+    const co=cos.find(function(c){return c.id===p.company_id;});
+    const cnt=props.filter(function(x){return x.project_id===p.id;}).length;
+    const hp=p.location||p.project_area||p.view||p.features;
+    return '<div class="coitem">'
+      +'<div class="coitem-hdr">'
+      +'<div class="cocd" style="font-size:10px;min-width:auto">'+(co?co.code:'—')+'</div>'
+      +'<div class="conm">'+p.name+(co?'<div style="font-size:10px;color:var(--mt);font-weight:400">'+co.name+'</div>':'')+'</div>'
+      +'<div class="cocnt">'+cnt+' وحدة</div>'
+      +'<div class="coacts">'
+      +'<button class="ibtn profile-btn" onclick="toggleProfile(\'prj-'+p.id+'\')" title="التفاصيل">👁</button>'
+      +'<button class="ibtn" onclick="openProjModal(\''+p.id+'\')">✏️</button>'
+      +'<button class="ibtn dl" onclick="confirmDelProj(\''+p.id+'\')">🗑️</button>'
+      +'</div></div>'
+      +'<div class="co-profile" id="cp-prj-'+p.id+'">'
+      +(p.location?'<div class="co-profile-row"><span class="co-profile-lbl">📍 الموقع</span><span class="co-profile-val">'+p.location+'</span></div>':'')
+      +(p.project_area?'<div class="co-profile-row"><span class="co-profile-lbl">📏 المساحة</span><span class="co-profile-val">'+p.project_area+'</span></div>':'')
+      +(p.view?'<div class="co-profile-row"><span class="co-profile-lbl">🌅 الإطلالة</span><span class="co-profile-val">'+p.view+'</span></div>':'')
+      +(p.delivery_date?'<div class="co-profile-row"><span class="co-profile-lbl">📅 التسليم</span><span class="co-profile-val">'+p.delivery_date+'</span></div>':'')
+      +(p.features?'<div class="co-profile-row"><span class="co-profile-lbl">🎁 المميزات</span><span class="co-profile-val">'+p.features.split('|').map(function(f){return '✅ '+f.trim();}).join('<br>')+'</span></div>':'')
+      +(p.notes?'<div class="co-profile-row"><span class="co-profile-lbl">🗒️ ملاحظات</span><span class="co-profile-val">'+p.notes+'</span></div>':'')
+      +(!hp?'<div class="co-profile-empty">لا توجد بيانات — اضغط تعديل لإضافتها</div>':'')
+      +'</div></div>';
+  }).join('');
+}
+
+function addUnitFeat(val){
+  const list=document.getElementById('unit-feat-list');if(!list)return;
+  const row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="مثال: تراس خاص" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function getUnitFeats(){return[...document.querySelectorAll('#unit-feat-list .feat-row input')].map(i=>i.value.trim()).filter(Boolean);}
+function setUnitFeats(str){const list=document.getElementById('unit-feat-list');if(!list)return;list.innerHTML='';if(!str)return;str.split('|').map(s=>s.trim()).filter(Boolean).forEach(s=>addUnitFeat(s));}
+
+function addFeat(val,listId){
+  listId=listId||'feat-list';
+  const list=document.getElementById(listId);if(!list)return;
+  const row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="مثال: كلوب هاوس" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function addProjFeat(val){addFeat(val,'prj-feat-list');}
+function getFeats(listId){return[...document.querySelectorAll('#'+(listId||'feat-list')+' .feat-row input')].map(i=>i.value.trim()).filter(Boolean);}
+function setFeats(str,listId){document.getElementById(listId||'feat-list').innerHTML='';if(!str)return;str.split('|').map(s=>s.trim()).filter(Boolean).forEach(s=>addFeat(s,listId||'feat-list'));}
+// ── Source selector ──
+function fillSourceDrop(){
+  const pg=document.getElementById('p-proj-grp');
+  const bg=document.getElementById('p-bld-grp');
+  if(pg)pg.innerHTML=projs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
+  if(bg)bg.innerHTML=buildings.map(b=>'<option value="bld_'+b.id+'">'+b.name+(b.location?' — '+b.location:'')+'</option>').join('');
+}
+function showSourceSection(which){
+  ['proj-info-section','bld-info-section','no-source-section'].forEach(function(id){
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  if(which){const el=document.getElementById(which);if(el)el.style.display='block';}
+}
+function onSourceChange(val){
+  const bfl=document.getElementById('bld-feat-list');if(bfl)bfl.innerHTML='';
+  if(!val){showSourceSection('');return;}
+  if(val.startsWith('proj_')){
+    const pid=val.replace('proj_','');
+    const proj=projs.find(function(p){return p.id===pid;});
+    showSourceSection('proj-info-section');
+    if(proj){
+      // Store hidden values
+      const fields={p_loc:proj.location||'',p_proj_area:proj.project_area||'',p_view:proj.view||'',p_del:proj.delivery_date||''};
+      Object.keys(fields).forEach(function(k){const el=document.getElementById(k.replace(/_/g,'-'));if(el)el.value=fields[k];});
+      const fd=document.getElementById('proj-feats-display');
+      if(fd){
+        let html='';
+        if(proj.location)html+='<div>📍 '+proj.location+'</div>';
+        if(proj.project_area)html+='<div>📏 '+proj.project_area+'</div>';
+        if(proj.view)html+='<div>🌅 '+proj.view+'</div>';
+        if(proj.delivery_date)html+='<div>📅 '+proj.delivery_date+'</div>';
+        if(proj.features){var fts=proj.features.split('|').filter(Boolean);if(fts.length)html+='<div style="margin-top:6px">'+fts.map(function(f){return'✅ '+f.trim();}).join(' &nbsp;')+'</div>';}
+        fd.innerHTML=html||'<div style="color:var(--mt)">لا بيانات للمشروع</div>';
+      }
+    }
+  }else if(val.startsWith('bld_')){
+    const bid=val.replace('bld_','');
+    const bld=buildings.find(function(b){return b.id===bid;});
+    showSourceSection('bld-info-section');
+    if(bld){
+      const pn=document.getElementById('p-bld-name');if(pn)pn.value=bld.name||'';
+      const loc=document.getElementById('p-loc');if(loc)loc.value=bld.location||'';
+      const bl=document.getElementById('p-bld-land');if(bl)bl.value=bld.land_area||'';
+      const by=document.getElementById('p-bld-year');if(by)by.value=bld.build_year||'';
+      const be=document.getElementById('p-bld-elev');if(be)be.value=bld.elevators||'';
+      const bent=document.getElementById('p-bld-entrance');if(bent)bent.value=bld.entrance||'';
+      if(bld.features)setBldFeats(bld.features,'bld-feat-list');
+    }
+  }else if(val==='__new_building__'){
+    showSourceSection('bld-info-section');
+    ['p-bld-name','p-bld-land','p-bld-year','p-bld-elev','p-bld-entrance'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});
+    const loc=document.getElementById('p-loc');if(loc)loc.value='';
+    const bfl=document.getElementById('bld-feat-list');if(bfl)bfl.innerHTML='';
+  }
+}
+function onCoChange(){
+  const sel=document.getElementById('p-co');
+  const ow=document.getElementById('p-owner');
+  if(ow)ow.style.display=(sel&&sel.value)?'none':'';
+  upCode();
+}
+// ── Building feat helpers ──
+function addBldFeat(val){
+  const list=document.getElementById('bld-feat-list');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة المبنى" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function addBldFeatModal(val){
+  const list=document.getElementById('bld-feat-list-modal');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة المبنى" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function getBldFeats(listId){return Array.from(document.querySelectorAll('#'+(listId||'bld-feat-list')+' .feat-row input')).map(function(i){return i.value.trim();}).filter(Boolean);}
+function setBldFeats(str,listId){var list=document.getElementById(listId||'bld-feat-list');if(!list)return;list.innerHTML='';if(!str)return;str.split('|').map(function(s){return s.trim();}).filter(Boolean).forEach(function(s){var row=document.createElement('div');row.className='feat-row';row.innerHTML='<input value="'+s+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';list.appendChild(row);});}
+// ── Unit feat helpers ──
+function addUnitFeat(val){
+  var list=document.getElementById('unit-feat-list');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة الوحدة" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function getUnitFeats(){return Array.from(document.querySelectorAll('#unit-feat-list .feat-row input')).map(function(i){return i.value.trim();}).filter(Boolean);}
+function setUnitFeats(str){var list=document.getElementById('unit-feat-list');if(!list)return;list.innerHTML='';if(!str)return;str.split('|').map(function(s){return s.trim();}).filter(Boolean).forEach(function(s){addUnitFeat(s);});}
+// ── Building CRUD ──
+function openBldModal(id){
+  eBldId=id||null;
+  document.getElementById('bldtitle').textContent=id?'تعديل المبنى':'إضافة مبنى / برج جديد';
+  var cSel=document.getElementById('bld-co');
+  if(cSel)cSel.innerHTML='<option value="">-- اختر --</option>'+cos.map(function(co){return'<option value="'+co.id+'"'+(id&&buildings.find(function(b){return b.id===id;})?.company_id===co.id?' selected':'')+'>'+co.name+'</option>';}).join('');
+  var fl=document.getElementById('bld-feat-list-modal');if(fl)fl.innerHTML='';
+  if(id){
+    var b=buildings.find(function(x){return x.id===id;});if(!b)return;
+    document.getElementById('bld-nm').value=b.name||'';
+    document.getElementById('bld-loc').value=b.location||'';
+    document.getElementById('bld-land').value=b.land_area||'';
+    document.getElementById('bld-year').value=b.build_year||'';
+    document.getElementById('bld-elev').value=b.elevators||'';
+    document.getElementById('bld-entrance').value=b.entrance||'';
+    document.getElementById('bld-notes').value=b.notes||'';
+    setBldFeats(b.features||'','bld-feat-list-modal');
+  }else{
+    ['bld-nm','bld-loc','bld-land','bld-year','bld-elev','bld-entrance','bld-notes'].forEach(function(i){document.getElementById(i).value='';});
+  }
+  openOv('ov-bld');
+}
+async function saveBld(){
+  var nm=document.getElementById('bld-nm').value.trim();
+  if(!nm){toast('أدخل اسم المبنى',1);return;}
+  var feats=getBldFeats('bld-feat-list-modal').join(' | ');
+  var d={name:nm,company_id:document.getElementById('bld-co').value||null,location:document.getElementById('bld-loc').value.trim(),land_area:document.getElementById('bld-land').value.trim(),build_year:document.getElementById('bld-year').value.trim(),elevators:document.getElementById('bld-elev').value.trim(),entrance:document.getElementById('bld-entrance').value.trim(),features:feats,notes:document.getElementById('bld-notes').value.trim()};
+  try{
+    if(eBldId){await updBuilding(eBldId,d);var i=buildings.findIndex(function(b){return b.id===eBldId;});if(i>=0)buildings[i]=Object.assign({},buildings[i],d);toast('تم التحديث ✓');}
+    else{var r=await addBuilding(d);if(r&&r[0])buildings.push(r[0]);buildings.sort(function(a,b){return a.name.localeCompare(b.name);});toast('تمت الإضافة ✓');}
+    closeOv('ov-bld');renderBldList();fillSourceDrop();
+  }catch(e){toast('خطأ: '+e.message,1);}
+}
+async function confirmDelBld(id){
+  var b=buildings.find(function(x){return x.id===id;});
+  if(!confirm('حذف المبنى "'+( b?b.name:'')+'"؟'))return;
+  try{await delBuilding(id);buildings=buildings.filter(function(x){return x.id!==id;});renderBldList();fillSourceDrop();toast('تم الحذف');}
+  catch(e){toast('خطأ',1);}
+}
+function renderBldList(){
+  var el=document.getElementById('bldlist');if(!el)return;
+  if(!buildings.length){el.innerHTML='<div class="loading">لا توجد مباني</div>';return;}
+  el.innerHTML=buildings.map(function(b){
+    var cnt=props.filter(function(p){return p.building_id===b.id;}).length;
+    return '<div class="coitem"><div class="coitem-hdr">'
+      +'<div class="cocd" style="font-size:11px;min-width:auto">🏢</div>'
+      +'<div class="conm">'+b.name+(b.location?'<div style="font-size:10px;color:var(--mt);font-weight:400">'+b.location+'</div>':'')+'</div>'
+      +'<div class="cocnt">'+cnt+' وحدة</div>'
+      +'<div class="coacts">'
+      +'<button class="ibtn" data-bid="'+b.id+'" onclick="openBldModal(this.dataset.bid)">✏️</button>'
+      +'<button class="ibtn dl" data-bid="'+b.id+'" onclick="confirmDelBld(this.dataset.bid)">🗑️</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+// ── getLiveProjectData — always reads live from projs/buildings arrays ──
+function getLiveProjectData(p){
+  if(p.project_id){
+    var proj=projs.find(function(x){return x.id===p.project_id;});
+    if(proj)return{location:proj.location||'',project_area:proj.project_area||'',view:proj.view||'',delivery_date:proj.delivery_date||'',features:proj.features||'',source_name:proj.name,is_building:false};
+  }
+  if(p.building_id){
+    var bld=buildings.find(function(x){return x.id===p.building_id;});
+    if(bld)return{location:bld.location||'',project_area:bld.land_area||'',view:'',delivery_date:'',features:bld.features||'',source_name:bld.name,is_building:true};
+  }
+  return{location:p.location||'',project_area:p.project_area||'',view:p.view||'',delivery_date:p.delivery_date||'',features:p.features||'',source_name:'',is_building:false};
+}
+function checkCoCode(val){
+  const warn=document.getElementById('co-cd-warn');
+  if(!val||val.length<2){if(warn)warn.style.display='none';return;}
+  const exists=cos.some(c=>c.code===val&&c.id!==eCid);
+  if(warn)warn.style.display=exists?'block':'none';
+}
+function renderCoDrop(){
+  const sel=document.getElementById('p-co');
+  const cur=sel.value;
+  sel.innerHTML=`<option value="">-- اختر شركة --</option>`+cos.map(c=>`<option value="${c.id}" data-code="${c.code}" data-name="${c.name}">${c.name} (${c.code})</option>`).join('');
+  if(cur)sel.value=cur;
+}
+
+function renderCmpBar(){
+  const bar=document.getElementById('cmpbar');
+  if(!cids.length){bar.classList.remove('vis');return;}
+  bar.classList.add('vis');
+  const sel=props.filter(p=>cids.includes(p.id));
+  document.getElementById('cmpnames').textContent=sel.map(p=>p.name).join(' ⚖️ ');
+  document.getElementById('cmpgo').disabled=cids.length<2;
+}
+
+function goTab(t){
+  document.getElementById('vport').style.display=t==='port'?'':'none';
+  document.getElementById('vset').style.display=t==='set'?'':'none';
+  document.getElementById('tab-port').classList.toggle('active',t==='port');
+  document.getElementById('tab-set').classList.toggle('active',t==='set');
+}
+
+document.getElementById('rate-in').addEventListener('change',async function(){
+  const v=parseFloat(this.value);
+  if(!v||v<1){this.value=rate;return;}
+  rate=v;
+  // update all cards immediately
+  renderGrid();renderStats();
+  // flash the rate box to confirm
+  const box=this.closest('.rate-box');
+  box.style.borderColor='var(--gold)';box.style.boxShadow='0 0 8px rgba(201,168,76,.4)';
+  setTimeout(()=>{box.style.borderColor='';box.style.boxShadow='';},800);
+  try{await upsSetting('exchange_rate',String(v));toast('✓ سعر الصرف '+v+' ج/$ — تم تحديث جميع العقارات');}
+  catch(e){toast('خطأ في الحفظ',1);}
+});
+
+function togCmp(id){
+  if(cids.includes(id)){cids=cids.filter(x=>x!==id);}
+  else{if(cids.length>=2){toast('الحد الأقصى عقارين');return;}cids.push(id);}
+  props.forEach(p=>{const c=document.getElementById('c-'+p.id);if(c)c.classList.toggle('sel',cids.includes(p.id));});
+  renderCmpBar();
+}
+function clrCmp(){cids=[];renderCmpBar();renderGrid();}
+
+function openCmpModal(){
+  if(cids.length<2)return;
+  const [p1,p2]=cids.map(id=>props.find(p=>p.id===id));
+  document.getElementById('cmptbl-wrap').innerHTML=buildCmpTbl(p1,p2);
+  openOv('ov-cmp');
+}
+function buildCmpTbl(p1,p2){
+  const rv=v=>v||'—';
+  const rp=(p)=>{const dp=getDisplayPrice(p);if(!dp.orig)return'—';if(dp.hasDisc)return`<span style="text-decoration:line-through;color:var(--mt);font-size:10px">${fmt(dp.orig)} ج</span><br><b style="color:var(--gold)">${fmt(Math.round(dp.fin))} ج</b> (${usd(dp.fin)})`;return`${fmt(dp.orig)} ج (${usd(dp.orig)})`;};
+  const ri=(p)=>{if(!p.quarterly_installment)return'—';const freq=p.installment_frequency||'quarterly';return`${fmt(p.quarterly_installment)} ج — ${FREQ[freq]||freq}`;};
+  const rows=[
+    ['الكود',rv(p1.code),rv(p2.code)],
+    ['المطور',rv(p1.company_name),rv(p2.company_name)],
+    ['النوع',TL[p1.type]||p1.type,TL[p2.type]||p2.type],
+    ['الحالة',SL[p1.status]||p1.status,SL[p2.status]||p2.status],
+    ['الموقع',rv(p1.location),rv(p2.location)],
+    ['نوع الوحدة',rv(p1.unit_type),rv(p2.unit_type)],
+    ['المساحة',rv(p1.area),rv(p2.area)],
+    ['الدور',rv(p1.floor_num),rv(p2.floor_num)],
+    ['الإطلالة',rv(p1.view),rv(p2.view)],
+    ['السعر الإجمالي',rp(p1),rp(p2)],
+    ['الخصم',p1.discount_pct?p1.discount_pct+'%':'—',p2.discount_pct?p2.discount_pct+'%':'—'],
+    ['المقدم',rv(p1.down_payment),rv(p2.down_payment)],
+    ['مدة التقسيط',rv(p1.installment_years),rv(p2.installment_years)],
+    ['القسط',ri(p1),ri(p2)],
+    ['التسليم',rv(p1.delivery_date),rv(p2.delivery_date)],
+    ['التشطيب',rv(p1.finishing),rv(p2.finishing)],
+  ];
+  return`<table class="cmptbl"><tr><th>البند</th><th>${p1.name}</th><th>${p2.name}</th></tr>${rows.map(([k,v1,v2])=>v1!=='—'||v2!=='—'?`<tr><td>${k}</td><td>${v1}</td><td>${v2}</td></tr>`:'').join('')}</table>`;
+}
+function buildCmpWa(p1,p2){
+  const rv=v=>v||'—';
+  const rp=n=>n?`${fmt(n)} ج (${usd(n)})`:'—';
+  const rm=n=>n?`${fmt(Math.round(n/3))} ج (${usd(Math.round(n/3))})`:'—';
+  return`⚖️ مقارنة عقارية | كورينتو\n\n${'━'.repeat(14)}\n📋  | ${p1.name} | ${p2.name}\n${'━'.repeat(14)}\n🏢 المطور     | ${rv(p1.company_name)} | ${rv(p2.company_name)}\n📐 المساحة   | ${rv(p1.area)} | ${rv(p2.area)}\n📍 الموقع     | ${rv(p1.location)} | ${rv(p2.location)}\n💰 السعر       | ${rp(p1.price)} | ${rp(p2.price)}\n📥 المقدم      | ${rv(p1.down_payment)} | ${rv(p2.down_payment)}\n📅 التقسيط    | ${rv(p1.installment_years)} | ${rv(p2.installment_years)}\n📊 شهرياً      | ${rm(p1.quarterly_installment)} | ${rm(p2.quarterly_installment)}\n🏗️ التسليم    | ${rv(p1.delivery_date)} | ${rv(p2.delivery_date)}\n${'━'.repeat(14)}\n\n📲 للاستفسار:\n${p1.phone||'+201080121357'}`;
+}
+function cpyCmp(){const[p1,p2]=cids.map(id=>props.find(p=>p.id===id));ncp(buildCmpWa(p1,p2));closeOv('ov-cmp');}
+
+// ── Source selector ──
+function fillSourceDrop(){
+  const pg=document.getElementById('p-proj-grp');
+  const bg=document.getElementById('p-bld-grp');
+  if(pg)pg.innerHTML=projs.map(p=>'<option value="proj_'+p.id+'">'+p.name+'</option>').join('');
+  if(bg)bg.innerHTML=buildings.map(b=>'<option value="bld_'+b.id+'">'+b.name+(b.location?' — '+b.location:'')+'</option>').join('');
+}
+function showSourceSection(which){
+  ['proj-info-section','bld-info-section','no-source-section'].forEach(function(id){
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  if(which){const el=document.getElementById(which);if(el)el.style.display='block';}
+}
+function onSourceChange(val){
+  const bfl=document.getElementById('bld-feat-list');if(bfl)bfl.innerHTML='';
+  if(!val){showSourceSection('');return;}
+  if(val.startsWith('proj_')){
+    const pid=val.replace('proj_','');
+    const proj=projs.find(function(p){return p.id===pid;});
+    showSourceSection('proj-info-section');
+    if(proj){
+      // Store hidden values
+      const fields={p_loc:proj.location||'',p_proj_area:proj.project_area||'',p_view:proj.view||'',p_del:proj.delivery_date||''};
+      Object.keys(fields).forEach(function(k){const el=document.getElementById(k.replace(/_/g,'-'));if(el)el.value=fields[k];});
+      const fd=document.getElementById('proj-feats-display');
+      if(fd){
+        let html='';
+        if(proj.location)html+='<div>📍 '+proj.location+'</div>';
+        if(proj.project_area)html+='<div>📏 '+proj.project_area+'</div>';
+        if(proj.view)html+='<div>🌅 '+proj.view+'</div>';
+        if(proj.delivery_date)html+='<div>📅 '+proj.delivery_date+'</div>';
+        if(proj.features){var fts=proj.features.split('|').filter(Boolean);if(fts.length)html+='<div style="margin-top:6px">'+fts.map(function(f){return'✅ '+f.trim();}).join(' &nbsp;')+'</div>';}
+        fd.innerHTML=html||'<div style="color:var(--mt)">لا بيانات للمشروع</div>';
+      }
+    }
+  }else if(val.startsWith('bld_')){
+    const bid=val.replace('bld_','');
+    const bld=buildings.find(function(b){return b.id===bid;});
+    showSourceSection('bld-info-section');
+    if(bld){
+      const pn=document.getElementById('p-bld-name');if(pn)pn.value=bld.name||'';
+      const loc=document.getElementById('p-loc');if(loc)loc.value=bld.location||'';
+      const bl=document.getElementById('p-bld-land');if(bl)bl.value=bld.land_area||'';
+      const by=document.getElementById('p-bld-year');if(by)by.value=bld.build_year||'';
+      const be=document.getElementById('p-bld-elev');if(be)be.value=bld.elevators||'';
+      const bent=document.getElementById('p-bld-entrance');if(bent)bent.value=bld.entrance||'';
+      if(bld.features)setBldFeats(bld.features,'bld-feat-list');
+    }
+  }else if(val==='__new_building__'){
+    showSourceSection('bld-info-section');
+    ['p-bld-name','p-bld-land','p-bld-year','p-bld-elev','p-bld-entrance'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});
+    const loc=document.getElementById('p-loc');if(loc)loc.value='';
+    const bfl=document.getElementById('bld-feat-list');if(bfl)bfl.innerHTML='';
+  }
+}
+function onCoChange(){
+  const sel=document.getElementById('p-co');
+  const ow=document.getElementById('p-owner');
+  if(ow)ow.style.display=(sel&&sel.value)?'none':'';
+  upCode();
+}
+// ── Building feat helpers ──
+function addBldFeat(val){
+  const list=document.getElementById('bld-feat-list');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة المبنى" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function addBldFeatModal(val){
+  const list=document.getElementById('bld-feat-list-modal');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة المبنى" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function getBldFeats(listId){return Array.from(document.querySelectorAll('#'+(listId||'bld-feat-list')+' .feat-row input')).map(function(i){return i.value.trim();}).filter(Boolean);}
+function setBldFeats(str,listId){var list=document.getElementById(listId||'bld-feat-list');if(!list)return;list.innerHTML='';if(!str)return;str.split('|').map(function(s){return s.trim();}).filter(Boolean).forEach(function(s){var row=document.createElement('div');row.className='feat-row';row.innerHTML='<input value="'+s+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';list.appendChild(row);});}
+// ── Unit feat helpers ──
+function addUnitFeat(val){
+  var list=document.getElementById('unit-feat-list');if(!list)return;
+  var row=document.createElement('div');row.className='feat-row';
+  row.innerHTML='<input placeholder="ميزة الوحدة" value="'+(val||'')+'"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(row);
+}
+function getUnitFeats(){return Array.from(document.querySelectorAll('#unit-feat-list .feat-row input')).map(function(i){return i.value.trim();}).filter(Boolean);}
+function setUnitFeats(str){var list=document.getElementById('unit-feat-list');if(!list)return;list.innerHTML='';if(!str)return;str.split('|').map(function(s){return s.trim();}).filter(Boolean).forEach(function(s){addUnitFeat(s);});}
+// ── Building CRUD ──
+function openBldModal(id){
+  eBldId=id||null;
+  document.getElementById('bldtitle').textContent=id?'تعديل المبنى':'إضافة مبنى / برج جديد';
+  var cSel=document.getElementById('bld-co');
+  if(cSel)cSel.innerHTML='<option value="">-- اختر --</option>'+cos.map(function(co){return'<option value="'+co.id+'"'+(id&&buildings.find(function(b){return b.id===id;})?.company_id===co.id?' selected':'')+'>'+co.name+'</option>';}).join('');
+  var fl=document.getElementById('bld-feat-list-modal');if(fl)fl.innerHTML='';
+  if(id){
+    var b=buildings.find(function(x){return x.id===id;});if(!b)return;
+    document.getElementById('bld-nm').value=b.name||'';
+    document.getElementById('bld-loc').value=b.location||'';
+    document.getElementById('bld-land').value=b.land_area||'';
+    document.getElementById('bld-year').value=b.build_year||'';
+    document.getElementById('bld-elev').value=b.elevators||'';
+    document.getElementById('bld-entrance').value=b.entrance||'';
+    document.getElementById('bld-notes').value=b.notes||'';
+    setBldFeats(b.features||'','bld-feat-list-modal');
+  }else{
+    ['bld-nm','bld-loc','bld-land','bld-year','bld-elev','bld-entrance','bld-notes'].forEach(function(i){document.getElementById(i).value='';});
+  }
+  openOv('ov-bld');
+}
+async function saveBld(){
+  var nm=document.getElementById('bld-nm').value.trim();
+  if(!nm){toast('أدخل اسم المبنى',1);return;}
+  var feats=getBldFeats('bld-feat-list-modal').join(' | ');
+  var d={name:nm,company_id:document.getElementById('bld-co').value||null,location:document.getElementById('bld-loc').value.trim(),land_area:document.getElementById('bld-land').value.trim(),build_year:document.getElementById('bld-year').value.trim(),elevators:document.getElementById('bld-elev').value.trim(),entrance:document.getElementById('bld-entrance').value.trim(),features:feats,notes:document.getElementById('bld-notes').value.trim()};
+  try{
+    if(eBldId){await updBuilding(eBldId,d);var i=buildings.findIndex(function(b){return b.id===eBldId;});if(i>=0)buildings[i]=Object.assign({},buildings[i],d);toast('تم التحديث ✓');}
+    else{var r=await addBuilding(d);if(r&&r[0])buildings.push(r[0]);buildings.sort(function(a,b){return a.name.localeCompare(b.name);});toast('تمت الإضافة ✓');}
+    closeOv('ov-bld');renderBldList();fillSourceDrop();
+  }catch(e){toast('خطأ: '+e.message,1);}
+}
+async function confirmDelBld(id){
+  var b=buildings.find(function(x){return x.id===id;});
+  if(!confirm('حذف المبنى "'+( b?b.name:'')+'"؟'))return;
+  try{await delBuilding(id);buildings=buildings.filter(function(x){return x.id!==id;});renderBldList();fillSourceDrop();toast('تم الحذف');}
+  catch(e){toast('خطأ',1);}
+}
+function renderBldList(){
+  var el=document.getElementById('bldlist');if(!el)return;
+  if(!buildings.length){el.innerHTML='<div class="loading">لا توجد مباني</div>';return;}
+  el.innerHTML=buildings.map(function(b){
+    var cnt=props.filter(function(p){return p.building_id===b.id;}).length;
+    return '<div class="coitem"><div class="coitem-hdr">'
+      +'<div class="cocd" style="font-size:11px;min-width:auto">🏢</div>'
+      +'<div class="conm">'+b.name+(b.location?'<div style="font-size:10px;color:var(--mt);font-weight:400">'+b.location+'</div>':'')+'</div>'
+      +'<div class="cocnt">'+cnt+' وحدة</div>'
+      +'<div class="coacts">'
+      +'<button class="ibtn" data-bid="'+b.id+'" onclick="openBldModal(this.dataset.bid)">✏️</button>'
+      +'<button class="ibtn dl" data-bid="'+b.id+'" onclick="confirmDelBld(this.dataset.bid)">🗑️</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+// ── getLiveProjectData — always reads live from projs/buildings arrays ──
+function getLiveProjectData(p){
+  if(p.project_id){
+    var proj=projs.find(function(x){return x.id===p.project_id;});
+    if(proj)return{location:proj.location||'',project_area:proj.project_area||'',view:proj.view||'',delivery_date:proj.delivery_date||'',features:proj.features||'',source_name:proj.name,is_building:false};
+  }
+  if(p.building_id){
+    var bld=buildings.find(function(x){return x.id===p.building_id;});
+    if(bld)return{location:bld.location||'',project_area:bld.land_area||'',view:'',delivery_date:'',features:bld.features||'',source_name:bld.name,is_building:true};
+  }
+  return{location:p.location||'',project_area:p.project_area||'',view:p.view||'',delivery_date:p.delivery_date||'',features:p.features||'',source_name:'',is_building:false};
+}
+function checkCoCode(val){
+  const warn=document.getElementById('co-cd-warn');
+  if(!val||val.length<2){warn.style.display='none';return;}
+  const exists=cos.some(c=>c.code===val&&c.id!==eCid);
+  warn.style.display=exists?'block':'none';
+}
+
+function showWa(id){
+  const p=props.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('wa-txt').textContent=buildWa(p);
+  openOv('ov-wa');
+}
+
+function buildWa(p){
+  const freq=p.installment_frequency||'quarterly';
+  const FREQ={monthly:'شهري',bimonthly:'كل شهرين',quarterly:'ربع سنوي',quadrimester:'كل 4 شهور',biannual:'نصف سنوي',annual:'سنوي'};
+  const FREQ_MO={monthly:1,bimonthly:2,quarterly:3,quadrimester:4,biannual:6,annual:12};
+  const mEq=p.quarterly_installment?Math.round(p.quarterly_installment/(FREQ_MO[freq]||3)):null;
+  const dp=getDisplayPrice(p);
+  const co=cos.find(function(x){return x.id===p.company_id;});
+  const live=getLiveProjectData(p);
+  const SEP='━'.repeat(20);
+  const RLM='‏'; // Right-to-Left Mark
+  let msg=RLM;
+  // ── رأس ──
+  if(live.location) msg+='📍 '+live.location+'\n';
+  msg+='\n'+(TE[p.type]||'🏢')+' *'+(p.name&&p.name!==p.code?p.name:'وحدة عقارية')+'* | '+(TL[p.type]||p.type)+'\n';
+  if(co) msg+='⚜️ '+co.name+'\n';
+  else if(p.company_name) msg+='⚜️ '+p.company_name+'\n';
+  if(p.code) msg+='🔖 *الكود: '+p.code+'*'+'\n';
+  // ── عن المطور ──
+  if(co&&(co.profile_bio||co.strengths||co.past_projects)){
+    msg+='\n'+SEP+'\n*🏢 عن المطور — '+co.name+(co.founded_year?' | تأسست '+co.founded_year:'')+'*\n';
+    if(co.profile_bio) msg+=co.profile_bio+'\n';
+    if(co.strengths){msg+='\n💪 *نقاط القوة:*\n';co.strengths.split('|').forEach(function(s){msg+='  ✅ '+s.trim()+'\n';});}
+    if(co.past_projects){msg+='\n🏗️ *سابقة الأعمال:*\n';co.past_projects.split('|').forEach(function(s){msg+='  • '+s.trim()+'\n';});}
+  }
+  // ── عن المشروع / المبنى ──
+  const srcLabel=live.is_building?'🏢 عن المبنى':'🏗️ عن المشروع';
+  const hasSource=live.source_name||live.location||live.project_area||live.view||live.delivery_date||live.features;
+  if(hasSource){
+    msg+='\n'+SEP+'\n*'+srcLabel+(live.source_name?' — '+live.source_name:'')+'*\n';
+    if(live.location) msg+='📍 الموقع: '+live.location+'\n';
+    if(live.project_area) msg+=(live.is_building?'📏 مساحة الأرض: ':'📏 مساحة المشروع: ')+live.project_area+'\n';
+    if(live.view) msg+='🌅 الإطلالة: '+live.view+'\n';
+    if(live.delivery_date) msg+='📅 موعد التسليم: '+live.delivery_date+'\n';
+    if(live.features){
+      const fts=live.features.split('|').map(function(f){return f.trim();}).filter(Boolean);
+      if(fts.length){msg+='\n🎁 *مميزات '+(live.is_building?'المبنى':'المشروع')+':*\n';fts.forEach(function(f){msg+='  ✅ '+f+'\n';});}
+    }
+  }
+  // ── تفاصيل الوحدة ──
+  const hasUnit=p.unit_type||p.floor_num||p.area||p.finishing||p.unit_view||p.bedrooms||p.bathrooms||p.balconies||p.living_rooms||p.has_living_room||p.has_laundry||p.has_maid_room||p.has_storage||p.unit_features;
+  if(hasUnit){
+    msg+='\n'+SEP+'\n*🏠 تفاصيل الوحدة*\n';
+    if(p.unit_type) msg+='🏷️ نوع الوحدة: '+p.unit_type+'\n';
+    if(p.floor_num) msg+='🔢 الدور: '+p.floor_num+'\n';
+    if(p.area) msg+='📐 المساحة: '+p.area+'\n';
+    if(p.finishing) msg+='🔧 التشطيب: '+p.finishing+'\n';
+    if(p.unit_view) msg+='🌅 فيو الشقة: '+p.unit_view+'\n';
+    if(p.bedrooms) msg+='🛏️ غرف النوم: '+p.bedrooms+'\n';
+    if(p.bathrooms) msg+='🚿 الحمامات: '+p.bathrooms+'\n';
+    if(p.balconies) msg+='🌿 البلكونات: '+p.balconies+'\n';
+    if(p.living_rooms) msg+='🛋️ الصالات: '+p.living_rooms+'\n';
+    const extras=[];
+    if(p.has_living_room)extras.push('ليفينج روم ✅');
+    if(p.has_laundry)extras.push('غرفة غسيل ✅');
+    if(p.has_maid_room)extras.push('غرفة خدامة ✅');
+    if(p.has_storage)extras.push('مخزن ✅');
+    if(extras.length) msg+=extras.join('  |  ')+'\n';
+    if(p.unit_features){
+      const uft=p.unit_features.split('|').map(function(f){return f.trim();}).filter(Boolean);
+      if(uft.length){msg+='\n✨ *مزايا الوحدة:*\n';uft.forEach(function(f){msg+='  ✅ '+f+'\n';});}
+    }
+  }
+  // ── السعر والتمويل ──
+  msg+='\n'+SEP+'\n*💰 السعر والتمويل*\n';
+  if(dp.orig){
+    if(dp.hasDisc){
+      msg+='• السعر الأصلي: ~~'+fmt(dp.orig)+' جنيه مصري~~ (~'+Math.round(dp.orig/rate).toLocaleString('en-US')+' دولار)\n';
+      msg+='• الخصم: '+(dp.discPct?dp.discPct.toFixed(1)+'%':'')+' ('+fmt(Math.round(dp.discAmt))+' جنيه / ~'+Math.round(dp.discAmt/rate).toLocaleString('en-US')+' دولار)\n';
+      msg+='• ✅ *السعر بعد الخصم: '+fmt(Math.round(dp.fin))+' جنيه مصري (~'+Math.round(dp.fin/rate).toLocaleString('en-US')+' دولار)*\n';
+    }else{
+      msg+='• السعر: *'+fmt(dp.orig)+' جنيه مصري* (~'+Math.round(dp.orig/rate).toLocaleString('en-US')+' دولار)\n';
+    }
+  }
+  if(p.down_payment) msg+='• المقدم: '+p.down_payment+'\n';
+  if(p.installment_years) msg+='• مدة التقسيط: '+p.installment_years+'\n';
+  if(p.quarterly_installment){
+    msg+='• مبلغ القسط: '+fmt(p.quarterly_installment)+' جنيه (~'+Math.round(p.quarterly_installment/rate).toLocaleString('en-US')+' دولار)\n';
+    msg+='• تكرار القسط: '+(FREQ[freq]||freq)+'\n';
+    if(freq!=='monthly'&&mEq) msg+='• 📌 *ما يعادل شهرياً: '+fmt(mEq)+' جنيه (~'+Math.round(mEq/rate).toLocaleString('en-US')+' دولار)*\n';
+  }
+  msg+='\n'+SEP+'\n⚠️ *وحدات محدودة — لا تفوّت الفرصة*\n\n📲 *للحجز والاستفسار:*\n'+(p.phone||'+201080121357');
+  return msg;
+}
+
+function cpyWa(){ncp(document.getElementById('wa-txt').textContent);closeOv('ov-wa');}
+
+function openClModal(pid){
+  clTxt='';
+  const el=document.getElementById('cl-res');
+  el.style.display='none';el.textContent='';
+  document.getElementById('cl-cpy').style.display='none';
+  if(pid){const p=props.find(x=>x.id===pid);if(p)document.querySelectorAll('.clt').forEach(c=>{c.checked=c.value===p.type;});}
+  else document.querySelectorAll('.clt').forEach(c=>c.checked=false);
+  openOv('ov-cl');
+}
+function genClient(){
+  const nm=document.getElementById('cl-nm').value.trim();
+  if(!nm){toast('أدخل اسم العميل',1);return;}
+  const mn=Number(document.getElementById('cl-mn').value)||0;
+  const mx=Number(document.getElementById('cl-mx').value)||Infinity;
+  const types=[...document.querySelectorAll('.clt:checked')].map(c=>c.value);
+  const st=document.getElementById('cl-st').value;
+  const nt=document.getElementById('cl-nt').value.trim();
+  let mat=props.filter(p=>{
+    if(types.length&&!types.includes(p.type))return false;
+    if(st&&p.status!==st)return false;
+    if(mn&&p.price&&p.price<mn)return false;
+    if(mx!==Infinity&&p.price&&p.price>mx)return false;
+    return true;
+  });
+  if(!mat.length){const el=document.getElementById('cl-res');el.style.display='block';el.textContent='لا توجد عقارات تطابق المتطلبات';return;}
+  const tnames=types.map(t=>TL[t]).join(' / ')||'عقارات متنوعة';
+  const bdg=mx===Infinity?`من ${fmt(mn)} ج`:`${fmt(mn)} – ${fmt(mx)} ج (${usd(mx)})`;
+  let msg=`أهلاً ${nm} 👋\n\nبناءً على طلبك لـ ${tnames}`;
+  if(mn||mx!==Infinity)msg+=`\nالميزانية: ${bdg}`;
+  msg+=`\n\nوجدت لك ${mat.length} خيار${mat.length>1?'ات':''} من محفظة كورينتو:\n`;
+  const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
+  mat.slice(0,5).forEach((p,i)=>{
+    const freq=p.installment_frequency||'quarterly';
+    const mEq=moEq(p.quarterly_installment,freq);
+    const dp=getDisplayPrice(p);
+    msg+=`\n${'━'.repeat(14)}\n${medals[i]||'•'} ${p.name}`;
+    if(p.code)msg+=` [${p.code}]`;
+    msg+='\n';
+    if(p.company_name)msg+=`• المطور: ${p.company_name}\n`;
+    if(p.location)msg+=`• الموقع: ${p.location}\n`;
+    if(p.area)msg+=`• المساحة: ${p.area}\n`;
+    if(dp.orig){
+      if(dp.hasDisc) msg+=`• السعر: ${fmt(dp.orig)} EGP ← ${fmt(Math.round(dp.fin))} EGP بعد خصم ${dp.discPct?dp.discPct.toFixed(0)+'%':''}\n`;
+      else msg+=`• السعر: ${fmt(dp.orig)} EGP (~${usd(dp.orig)})\n`;
+    }
+    if(p.down_payment)msg+=`• المقدم: ${p.down_payment}\n`;
+    if(mEq)msg+=`• شهرياً: ${fmt(mEq)} EGP (~${usd(mEq)})\n`;
+    if(p.delivery_date)msg+=`• التسليم: ${p.delivery_date}\n`;
+  });
+  if(nt)msg+=`\n${'━'.repeat(14)}\n📝 ${nt}\n`;
+  msg+=`\n${'━'.repeat(14)}\n📲 للتفاصيل والمعاينة:\n+201080121357`;
+  clTxt=msg;
+  const el=document.getElementById('cl-res');
+  el.textContent=msg;el.style.display='block';
+  document.getElementById('cl-cpy').style.display='block';
+}
+function cpyCl(){ncp(clTxt);closeOv('ov-cl');}
+
+function genCodePreview(type,coCode){
+  return (TP[type]||'XXX')+'-'+(coCode||'???')+'-'+String(getMaxSeq()+1).padStart(3,'0');
+}
+function upCode(){
+  const coSel=document.getElementById('p-co');
+  const opt=coSel.options[coSel.selectedIndex];
+  const coCode=opt?opt.dataset.code:'';
+  const type=document.getElementById('p-type').value;
+  document.getElementById('cprev').textContent=coCode?genCodePreview(type,coCode):(TP[type]+' - ??? - ###');
+}
+function addFeat(val=''){
+  const list=document.getElementById('feat-list');
+  const row=document.createElement('div');
+  row.className='feat-row';
+  row.innerHTML=`<input placeholder="مثال: كلوب هاوس" value="${val}"><button type="button" class="feat-del" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(row);
+}
+function getFeats(){return[...document.querySelectorAll('#feat-list .feat-row input')].map(i=>i.value.trim()).filter(Boolean);}
+function setFeats(str){document.getElementById('feat-list').innerHTML='';if(!str)return;str.split('|').map(s=>s.trim()).filter(Boolean).forEach(s=>addFeat(s));}
+
+function openPropModal(id){
+  ePid=id||null;
+  document.getElementById('ptitle').textContent=id?'تعديل العقار':'إضافة عقار جديد';
+  renderCoDrop();
+  if(id){
+    const p=props.find(x=>x.id===id);if(!p)return;
+    document.getElementById('p-name').value=p.name||'';
+    document.getElementById('p-co').value=p.company_id||'';
+    document.getElementById('p-type').value=p.type||'res';
+    document.getElementById('p-status').value=p.status||'primary';
+    document.getElementById('p-loc').value=p.location||'';
+    document.getElementById('p-proj-area').value=p.project_area||'';
+    document.getElementById('p-view').value=p.view||'';
+    document.getElementById('p-del').value=p.delivery_date||'';
+    setFeats(p.features||'');
+    document.getElementById('p-utype').value=p.unit_type||'';
+    document.getElementById('p-floor').value=p.floor_num||'';
+    document.getElementById('p-area').value=p.area||'';
+    document.getElementById('p-fin').value=p.finishing||'';
+    document.getElementById('p-unit-view').value=p.unit_view||'';
+    document.getElementById('p-bed').value=p.bedrooms||'';
+    document.getElementById('p-bath').value=p.bathrooms||'';
+    document.getElementById('p-bal').value=p.balconies||'';
+    document.getElementById('p-hall').value=p.living_rooms||'';
+    document.getElementById('p-living').checked=!!p.has_living_room;
+    document.getElementById('p-laundry').checked=!!p.has_laundry;
+    document.getElementById('p-maid').checked=!!p.has_maid_room;
+    document.getElementById('p-store').checked=!!p.has_storage;
+    document.getElementById('p-price').value=p.original_price||p.price||'';
+    document.getElementById('p-disc-pct').value=p.discount_pct||'';
+    document.getElementById('p-disc-amt').value=p.discount_amount||'';
+    document.getElementById('p-down').value=p.down_payment||'';
+    document.getElementById('p-yrs').value=p.installment_years||'';
+    document.getElementById('p-inst').value=p.quarterly_installment||'';
+    document.getElementById('p-inst-freq').value=p.installment_frequency||'quarterly';
+    document.getElementById('p-ph').value=p.phone||'+201080121357';
+    document.getElementById('p-notes').value=p.notes||'';
+    document.getElementById('cprev').textContent=p.code||'—';
+    calcDiscount('price');
+  }else{
+    ['p-name','p-loc','p-proj-area','p-view','p-del','p-utype','p-floor','p-area','p-fin','p-unit-view','p-bed','p-bath','p-bal','p-hall','p-price','p-disc-pct','p-disc-amt','p-down','p-yrs','p-inst','p-notes'].forEach(i=>{document.getElementById(i).value='';});
+    ['p-living','p-laundry','p-maid','p-store'].forEach(i=>{document.getElementById(i).checked=false;});
+    document.getElementById('p-co').value='';document.getElementById('p-type').value='res';
+    document.getElementById('p-status').value='primary';document.getElementById('p-inst-freq').value='quarterly';
+    document.getElementById('p-ph').value='+201080121357';
+    document.getElementById('p-final-wrap').style.display='none';
+    document.getElementById('cprev').textContent='--- - --- - ---';
+    var ssl=document.getElementById('p-source-sel');if(ssl)ssl.value='';
+    showSourceSection('');
+    const ufl2=document.getElementById('unit-feat-list');if(ufl2)ufl2.innerHTML='';
+    document.getElementById('feat-list').innerHTML='';
+    const ufl=document.getElementById('unit-feat-list');if(ufl)ufl.innerHTML='';
+  }
+  openOv('ov-prop');
+}
+async function saveProp(){
+  const nm=document.getElementById('p-name').value.trim();
+  const coSel=document.getElementById('p-co');
+  const opt=coSel.options[coSel.selectedIndex];
+  // name and company are optional
+  const type=document.getElementById('p-type').value;
+  const coCode=(opt&&opt.value&&opt.dataset.code)||'PVT';
+  const coName=(opt&&opt.value&&opt.dataset.name)||document.getElementById('p-owner')?.value?.trim()||'مالك خاص';
+  let code;
+  if(ePid){
+    code=props.find(p=>p.id===ePid)?.code||null;
+  }else{
+    code=getUniqueCode(type,coCode);
+  }
+  const origPrice=Number(document.getElementById('p-price').value)||null;
+  const discPct=parseFloat(document.getElementById('p-disc-pct').value)||null;
+  const discAmt=parseFloat(document.getElementById('p-disc-amt').value)||null;
+  const finalPrice=origPrice&&discAmt?Math.round(origPrice-discAmt):(origPrice||null);
+  const feats=getFeats().join(' | ');
+  const unitFeats=getUnitFeats().join(' | ');
+  // resolve source
+  const srcSel=document.getElementById('p-source-sel');
+  const srcVal=srcSel?srcSel.value:'';
+  let projId=null,bldId=null;
+  if(srcVal.startsWith('proj_')){projId=srcVal.replace('proj_','')||null;}
+  else if(srcVal.startsWith('bld_')){
+    bldId=srcVal.replace('bld_','')||null;
+    // update existing building data
+    const pbn=document.getElementById('p-bld-name')?.value?.trim();
+    if(bldId&&pbn){
+      const updD={name:pbn,location:document.getElementById('p-loc')?.value?.trim()||'',land_area:document.getElementById('p-bld-land')?.value?.trim()||'',build_year:document.getElementById('p-bld-year')?.value?.trim()||'',elevators:document.getElementById('p-bld-elev')?.value?.trim()||'',entrance:document.getElementById('p-bld-entrance')?.value?.trim()||'',features:getBldFeats('bld-feat-list').join(' | ')};
+      updBuilding(bldId,updD).then(function(){const bi=buildings.findIndex(function(b){return b.id===bldId;});if(bi>=0)buildings[bi]=Object.assign({},buildings[bi],updD);}).catch(function(){});
+    }
+  }else if(srcVal==='__new_building__'){
+    const bldNm=document.getElementById('p-bld-name')?.value?.trim();
+    if(bldNm){
+      try{
+        const bldD={name:bldNm,location:document.getElementById('p-loc')?.value?.trim()||'',land_area:document.getElementById('p-bld-land')?.value?.trim()||'',build_year:document.getElementById('p-bld-year')?.value?.trim()||'',elevators:document.getElementById('p-bld-elev')?.value?.trim()||'',entrance:document.getElementById('p-bld-entrance')?.value?.trim()||'',features:getBldFeats('bld-feat-list').join(' | ')};
+        const br=await addBuilding(bldD);
+        if(br&&br[0]){buildings.push(br[0]);buildings.sort(function(a,b){return a.name.localeCompare(b.name);});bldId=br[0].id;}
+      }catch(e){}
+    }
+  }
+  // resolve location from source if not manual
+  const pLocEl=document.getElementById('p-loc');
+  const locVal=pLocEl?pLocEl.value.trim():'';
+  const d={
+    name:nm||code,company_name:coName,company_code:coCode,type,
+    status:document.getElementById('p-status').value,code,
+    company_id:coSel.value||null,
+    project_id:projId||null,building_id:bldId||null,
+    source_type:bldId?'building':projId?'project':'manual',
+    location:locVal,
+    project_area:document.getElementById('p-proj-area')?.value?.trim()||'',
+    view:document.getElementById('p-view')?.value?.trim()||'',
+    delivery_date:document.getElementById('p-del')?.value?.trim()||'',
+    features:feats,
+    unit_features:unitFeats,
+    unit_type:document.getElementById('p-utype').value.trim(),
+    floor_num:document.getElementById('p-floor').value.trim(),
+    area:document.getElementById('p-area').value.trim(),
+    finishing:document.getElementById('p-fin').value.trim(),
+    unit_view:document.getElementById('p-unit-view').value.trim(),
+    bedrooms:Number(document.getElementById('p-bed').value)||null,
+    bathrooms:Number(document.getElementById('p-bath').value)||null,
+    balconies:Number(document.getElementById('p-bal').value)||null,
+    living_rooms:Number(document.getElementById('p-hall').value)||null,
+    has_living_room:document.getElementById('p-living').checked,
+    has_laundry:document.getElementById('p-laundry').checked,
+    has_maid_room:document.getElementById('p-maid').checked,
+    has_storage:document.getElementById('p-store').checked,
+    original_price:origPrice,discount_pct:discPct,discount_amount:discAmt,
+    final_price:finalPrice,price:finalPrice||origPrice,
+    down_payment:document.getElementById('p-down').value.trim(),
+    installment_years:document.getElementById('p-yrs').value.trim(),
+    quarterly_installment:Number(document.getElementById('p-inst').value)||null,
+    installment_frequency:document.getElementById('p-inst-freq').value||'quarterly',
+    phone:document.getElementById('p-ph').value.trim(),
+    notes:document.getElementById('p-notes').value.trim(),
+    owner_name:document.getElementById('p-owner')?.value?.trim()||null,
+    updated_at:new Date().toISOString()
+  };
+  try{
+    if(ePid){
+      await updProp(ePid,d);
+      const i=props.findIndex(p=>p.id===ePid);
+      if(i>=0)props[i]={...props[i],...d};
+      toast('تم التحديث ✓');
+    }else{
+      const r=await addProp(d);
+      if(r&&r[0])props.unshift(r[0]);
+      toast('تمت الإضافة ✓ — الكود: '+code);
+    }
+    closeOv('ov-prop');render();
+  }catch(e){toast('خطأ: '+e.message,1);}
+}
+async function confirmDel(id){
+  const p=props.find(x=>x.id===id);
+  if(!confirm(`حذف "${p?.name}"؟`))return;
+  try{await delProp(id);props=props.filter(x=>x.id!==id);cids=cids.filter(x=>x!==id);render();toast('تم الحذف');}
+  catch(e){toast('خطأ في الحذف',1);}
+}
+
+function openProjModal(id){
+  ePrjId=id||null;
+  document.getElementById('projtitle').textContent=id?'تعديل المشروع':'إضافة مشروع جديد';
+  const cSel=document.getElementById('prj-co');
+  cSel.innerHTML='<option value="">-- اختر --</option>'+cos.map(c=>'<option value="'+c.id+'"'+( id&&projs.find(p=>p.id===id)?.company_id===c.id?' selected':'')+'>'+c.name+'</option>').join('');
+  document.getElementById('prj-feat-list').innerHTML='';
+  if(id){
+    const p=projs.find(x=>x.id===id);if(!p)return;
+    document.getElementById('prj-nm').value=p.name||'';
+    cSel.value=p.company_id||'';
+    document.getElementById('prj-loc').value=p.location||'';
+    document.getElementById('prj-area').value=p.project_area||'';
+    document.getElementById('prj-view').value=p.view||'';
+    document.getElementById('prj-del').value=p.delivery_date||'';
+    document.getElementById('prj-notes').value=p.notes||'';
+    setFeats(p.features||'','prj-feat-list');
+  }else{
+    ['prj-nm','prj-loc','prj-area','prj-view','prj-del','prj-notes'].forEach(i=>document.getElementById(i).value='');
+    cSel.value='';
+  }
+  openOv('ov-proj');
+}
+async function saveProj(){
+  const nm=document.getElementById('prj-nm').value.trim();
+  if(!nm){toast('أدخل اسم المشروع',1);return;}
+  const feats=getFeats('prj-feat-list').join(' | ');
+  const d={name:nm,company_id:document.getElementById('prj-co').value||null,location:document.getElementById('prj-loc').value.trim(),project_area:document.getElementById('prj-area').value.trim(),view:document.getElementById('prj-view').value.trim(),delivery_date:document.getElementById('prj-del').value.trim(),features:feats,notes:document.getElementById('prj-notes').value.trim()};
+  try{
+    if(ePrjId){await updProj(ePrjId,d);const i=projs.findIndex(p=>p.id===ePrjId);if(i>=0)projs[i]={...projs[i],...d};toast('تم التحديث ✓');}
+    else{const r=await addProj(d);if(r&&r[0])projs.push(r[0]);projs.sort((a,b)=>a.name.localeCompare(b.name));toast('تمت الإضافة ✓');}
+    closeOv('ov-proj');render();
+  }catch(e){toast('خطأ: '+e.message,1);}
+}
+async function confirmDelProj(id){
+  const p=projs.find(x=>x.id===id);
+  if(!confirm('حذف مشروع "'+p?.name+'"؟'))return;
+  try{await delProj(id);projs=projs.filter(x=>x.id!==id);render();toast('تم الحذف');}
+  catch(e){toast('خطأ في الحذف',1);}
+}
+function openCoModal(id){
+  eCid=id||null;
+  document.getElementById('cotitle').textContent=id?'تعديل الشركة / المطور':'إضافة شركة / مطور جديد';
+  if(id){
+    const c=cos.find(x=>x.id===id);if(!c)return;
+    document.getElementById('co-nm').value=c.name||'';
+    document.getElementById('co-cd').value=c.code||'';
+    document.getElementById('co-year').value=c.founded_year||'';
+    document.getElementById('co-web').value=c.website||'';
+    document.getElementById('co-bio').value=c.profile_bio||'';
+    document.getElementById('co-str').value=c.strengths||'';
+    document.getElementById('co-prev').value=c.past_projects||'';
+    document.getElementById('co-notes').value=c.notes||'';
+  }else{
+    ['co-nm','co-cd','co-year','co-web','co-bio','co-str','co-prev','co-notes'].forEach(i=>document.getElementById(i).value='');
+  }
+  openOv('ov-co');
+}
+async function saveCo(){
+  const nm=document.getElementById('co-nm').value.trim();
+  const cd=document.getElementById('co-cd').value.trim().toUpperCase();
+  if(!nm){toast('أدخل اسم الشركة',1);return;}
+  if(cd.length<2){toast('أدخل رمز الشركة (2–5 حروف)',1);return;}
+  const d={
+    name:nm,code:cd,
+    founded_year:document.getElementById('co-year').value.trim()||null,
+    website:document.getElementById('co-web').value.trim()||null,
+    profile_bio:document.getElementById('co-bio').value.trim()||null,
+    strengths:document.getElementById('co-str').value.trim()||null,
+    past_projects:document.getElementById('co-prev').value.trim()||null,
+    notes:document.getElementById('co-notes').value.trim()||null,
+  };
+  try{
+    if(eCid){
+      await updCo(eCid,d);
+      const i=cos.findIndex(c=>c.id===eCid);
+      if(i>=0)cos[i]={...cos[i],...d};
+      toast('تم التحديث ✓');
+    }else{
+      const r=await addCo(d);
+      if(r&&r[0])cos.push(r[0]);
+      cos.sort((a,b)=>a.name.localeCompare(b.name));
+      toast('تمت الإضافة ✓');
+    }
+    closeOv('ov-co');render();
+  }catch(e){toast('خطأ: '+(e.message.includes('unique')?'الرمز مستخدم من قبل':e.message),1);}
+}
+async function confirmDelCo(id){
+  const c=cos.find(x=>x.id===id);
+  const cnt=props.filter(p=>p.company_id===id).length;
+  if(cnt>0){toast(`لا يمكن الحذف — ${cnt} عقار مرتبط بها`,1);return;}
+  if(!confirm(`حذف "${c?.name}"؟`))return;
+  try{await delCo(id);cos=cos.filter(x=>x.id!==id);render();toast('تم الحذف');}
+  catch(e){toast('خطأ',1);}
+}
+
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+function ncp(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast('تم النسخ ✓')).catch(()=>{
+    const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);toast('تم النسخ ✓');
+  });
+}
+function toast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(err?' err':'');t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+init();
+
+</script>
+</body>
 </html>
